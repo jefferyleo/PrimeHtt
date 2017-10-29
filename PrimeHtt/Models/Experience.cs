@@ -20,8 +20,9 @@ namespace PrimeHtt.Models
             this.ExperienceDetail = new HashSet<ExperienceDetail>();
         }
     
-        public long ExperienceId { get; set; }
-        public string PlaceName { get; set; }
+        public long LocationId { get; set; }
+        public string LocationName { get; set; }
+        public string CountryName { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string CreatedBy { get; set; }

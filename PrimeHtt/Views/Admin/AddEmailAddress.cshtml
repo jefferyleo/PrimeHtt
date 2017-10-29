@@ -1,0 +1,25 @@
+﻿@model PrimeHtt.Models.ViewModel.AddEmailAddress
+@{
+    ViewBag.Title = "AddEmailAddress";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form id="AddEmailAddress" name="AddEmailAddress" method="post">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <h1 class="page-header">Add Email Address</h1>
+        </div>
+        <div class="col-md-6 col-lg-3 col-lg-offset-3">
+            <div class="form-group">
+                <label for="ContactEmailAddress">Email Address</label>
+                <input type="text" id="ContactEmailAddress" name="ContactEmailAddress" class="form-control" placeholder="Enter Email Address" value="@Model.ContactEmailAddress" />
+                @Html.ValidationMessageFor(e => e.ContactEmailAddress)
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" class="btn btn-primary pull-right">Add</button>
+        </div>
+    </div>
+</form>

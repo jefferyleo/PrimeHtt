@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "AddBanner";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Add New Banner</h1>
+</div>
+
+<form id="AddNewBannerForm" style="color:#001a33;" name="AddNewBannerForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group">
+                <label for="BannerDescription">Banner Description</label>
+                <textarea id="BannerDescription" name="BannerDescription"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="BannerImage" id="lblBannerImage">Banner Image</label>
+                <input type="file" id="BannerImage" name="BannerImage" accept="image/png, image/jpeg, image/jpg" oninput="setCustomValidity('')" required onchange="document.getElementById('showPromo').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
+                <i style="color:crimson;">** Recommended Image Resolution 2048px*1152px</i>
+                <br />
+                <img id="showPromo" style="width:50%; display:none;" />
+            </div>
+            <div class="form-group">
+                <label>Active on Banner Slide now?</label>
+                <label class="checkbox-inline">
+                    <input id="IsActive" type="checkbox" checked> Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" id="addNewBanner" class="btn btn-primary pull-right">Add New Banner</button>
+        </div>
+    </div>
+</form>
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script>
+    CKEDITOR.replace('BannerDescription');
+    //CKEDITOR.on('instanceReady', function (evt) {
+    //    CKEDITOR.instances['editor1'].insertHtml('<span style="color:red;">123</span>');
+    //});
+
+    $(document).ready(function () {
+        $('#addNewBanner').click(function (e) {
+            e.preventDefault();
+            $('.loading').css('display', 'block');
+            var image = document.getElementById('BannerImage').files[0];
+            var form = $('form')[0];
+            var formData = new FormData();
+            formData.append('BannerDescription', CKEDITOR.instances['BannerDescription'].getData());
+            formData.append('BannerImage', document.getElementById('BannerImage').files[0]);
+            formData.append('IsActive', $('#IsActive').prop('checked'));
+            
+            if (image == undefined) {
+                $('#lblBannerImage').html('<span class="asterisk">*Please Select one Banner Image</span>');
+            } else {
+                $("#lblBannerImage .asterisk").remove();
+                $('#lblBannerImage').html('Banner Image');
+            }
+
+            if ($('.asterisk').val() == undefined) {
+                $.ajax({
+                    url: "/Admin/AddBanner",
+                    contentType: false,
+                    processData: false,
+                    traditional: true,
+                    dataType: 'json',
+                    data: formData,
+                    type: "POST",
+                    success: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal({
+                            title: "Done",
+                            text: "New Banner was successfully added!",
+                            type: "success"
+                        },
+                        function () {
+                            window.location.href = '/Admin/BannerList';
+                        });
+                    },
+                    error: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error")
+                    }
+                });
+            } else {
+                $('.loading').css('display', 'none');
+            }
+        });
+    });
+</script>

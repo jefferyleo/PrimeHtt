@@ -1,0 +1,144 @@
+﻿
+@{
+    ViewBag.Title = "AddService";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Add New Service</h1>
+</div>
+
+<form id="AddNewServiceForm" style="color:#001a33;" name="AddNewServiceForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group">
+                <label for="ServiceType" id="lblServiceType">Service Type</label>
+                <input type="text" id="ServiceType" name="ServiceType" class="form-control" placeholder="Enter Service Type" oninput="setCustomValidity('')" required />
+            </div>
+            <div class="form-group">
+                <label for="ServiceImage" id="lblServiceImage">Service Background Image</label>
+                <input type="file" id="ServiceImage" name="ServiceImage" accept="image/png, image/jpeg, image/jpg" oninput="setCustomValidity('')" required onchange="document.getElementById('showPromo').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
+                <i style="color:crimson;">** Recommended Image Resolution 260px*350px</i>
+                <br />
+                <img id="showPromo" style="width:50%; display:none;" />
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <button id="addNewItem" class="btn btn-default pull-left" style="margin-bottom: 10px;"><span class="glyphicon glyphicon-plus"></span> Add Service Item</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ServiceName" id="lblServiceName">Service Item Name</label>
+                <input type="text" id="ServiceName" name="ServiceName" class="form-control" placeholder="Enter Service Item Name" oninput="setCustomValidity('')" required />
+            </div>
+            <div id="itemDiv">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" id="addNewService" class="btn btn-primary pull-right">Add New Service</button>
+        </div>
+    </div>
+</form>
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script>
+    var counter = 1;
+    $(document).ready(function () {
+        $('#addNewItem').on('click', function () {
+            counter++;
+            $('#itemDiv').append('<div class="form-group" id="Item' + counter + '"><label for="ServiceName' + counter + '" id="lblServiceName' + counter + '">Service Name</label><div class="input-group" style="width: 100%;"><input type="text" id="ServiceName' + counter + '" name="ServiceName' + counter + '" class="form-control" style="width: 90%;" placeholder="Enter Service Item Name" oninput="setCustomValidity("")" required /><a id="RemoveServiceItem' + counter + '" class="btn btn-default" style="width: 10%;" onclick="removeSection(' + counter + ')"><span class="glyphicon glyphicon-minus"></span></a></div></div>');
+            return false;
+        });
+
+        $('#addNewService').click(function (e) {
+            e.preventDefault();
+            $('.loading').css('display', 'block');
+            var type = $('#ServiceType').val();
+            var sName = $('#ServiceName').val();
+            var image = document.getElementById('ServiceImage').files[0];
+            var serviceItems = [];
+            for (var i = 0; i < $('#itemDiv').children().length; i++) {
+                var name = "#" + $('#itemDiv').children().children('div').children('input')[i].id
+                var nameValue = $(name).val();
+                var lblName = '#' + $('#itemDiv').children().children('label')[i].id;
+                var lblAst = lblName + " .asterisk";
+                if(nameValue == ""){
+                    $(lblName).html('<span class="asterisk">*Please Enter Service Name</span>');
+                } else {
+                    $(lblAst).remove();
+                    $(lblName).html('Service Name');
+                    serviceItems.push(nameValue);
+                }
+            }
+
+            console.log(serviceItems);
+
+            var formData = new FormData();
+            formData.append('ServiceType', $('#ServiceType').val());
+            formData.append('ServiceName', $('#ServiceName').val());
+            formData.append('ServiceImage', document.getElementById('ServiceImage').files[0]);
+            for (var i = 0; i < serviceItems.length; i++) {
+                formData.append('ServiceItems[]', serviceItems[i]);
+            }
+
+            if (image == undefined) {
+                $('#lblServiceImage').html('<span class="asterisk">*Please Select Background Image</span>');
+            } else {
+                $("#lblServiceImage .asterisk").remove();
+                $('#lblServiceImage').html('Service Background Image');
+            }
+
+            if (type == "") {
+                $('#lblServiceType').html('<span class="asterisk">*Please Enter Service Type</span>');
+            } else {
+                $("#lblServiceType .asterisk").remove();
+                $('#lblServiceType').html('Service Type');
+            }
+
+            if (sName == "") {
+                $('#lblServiceName').html('<span class="asterisk">*Please Enter Service Name</span>');
+            } else {
+                $("#lblServiceName .asterisk").remove();
+                $('#lblServiceName').html('Service Name');
+            }
+
+            if ($('.asterisk').val() == undefined) {
+                $.ajax({
+                    url: "/Admin/AddService",
+                    contentType: false,
+                    processData: false,
+                    traditional: true,
+                    dataType: 'json',
+                    data: formData,
+                    type: "POST",
+                    success: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal({
+                            title: "Done",
+                            text: "New Service was successfully added!",
+                            type: "success"
+                        },
+                        function () {
+                            window.location.href = '/Admin/ServiceList';
+                        });
+                    },
+                    error: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error")
+                    }
+                });
+            } else {
+                $('.loading').css('display', 'none');
+            }
+        });
+    });
+
+    function removeSection(counter) {
+        var id = "Item" + counter;
+        document.getElementById(id).remove();
+    }
+</script>

@@ -1,0 +1,94 @@
+﻿@model PrimeHtt.Models.ViewModel.SocialNetworkModel
+
+@{
+    ViewBag.Title = "EditSocialNetwork";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Edit Social Network</h1>
+</div>
+
+<form id="EditNewSocialNetworkForm" style="color:#001a33;" name="EditNewSocialNetworkForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group" style="display: none;">
+                <input type="text" id="SocialNetworkId" name="SocialNetworkId" class="form-control" value="@Model.SocialNetworkId"/>
+            </div>
+            <div class="form-group">
+                <label for="SocialNetworkName">Social Network Name</label>
+                <input type="text" id="SocialNetworkName" name="SocialNetworkName" class="form-control" value="@Model.SocialNetworkName" disabled/>
+            </div>
+            <div class="form-group">
+                <label for="SocialNetworkLink" id="lblSocialNetworkLink">Social Network Link</label>
+                <input type="text" id="SocialNetworkLink" name="SocialNetworkLink" class="form-control" placeholder="Enter Social Network Link" oninput="setCustomValidity('')" required value="@Model.SocialNetworkLink" />
+            </div>
+            <div class="form-group">
+                <label>Active Social Network now?</label>
+                <label class="checkbox-inline">
+                    <input id="IsActive" type="checkbox" checked> Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" id="editSocialNetwork" class="btn btn-primary pull-right">Edit Social Network</button>
+        </div>
+    </div>
+</form>
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#IsActive').prop('checked', @Model.Status);
+
+        $('#editSocialNetwork').click(function (e) {
+            e.preventDefault();
+            $('.loading').css('display', 'block');
+            var socialId = $('#SocialNetworkId').val();
+            var socialLink = $('#SocialNetworkLink').val();
+            var isActive = $('#IsActive').prop('checked');
+
+            if (socialLink == "") {
+                $('#lblSocialNetworkLink').html('<span class="asterisk">*Please Enter Social Network Link</span>');
+            } else {
+                $("#lblSocialNetworkLink .asterisk").remove();
+                $('#lblSocialNetworkLink').html('Social Network Link');
+            }
+
+            if ($('.asterisk').val() == undefined) {
+                $.ajax({
+                    url: "/Admin/EditSocialNetwork",
+                    data: {
+                        "SocialNetworkId": socialId,
+                        "SocialNetworkLink": socialLink,
+                        "IsActive": isActive,
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal({
+                            title: "Done",
+                            text: "Social Network was successfully edited!",
+                            type: "success"
+                        },
+                        function () {
+                            window.location.href = '/Admin/SocialNetworkList';
+                        });
+                    },
+                    error: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error")
+                    }
+                });
+            } else {
+                $('.loading').css('display', 'none');
+            }
+        });
+    });
+</script>
+
+

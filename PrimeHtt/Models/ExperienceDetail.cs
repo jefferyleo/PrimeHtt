@@ -14,10 +14,12 @@ namespace PrimeHtt.Models
     
     public partial class ExperienceDetail
     {
-        public long ExperienceDetailId { get; set; }
-        public bool ExperienceType { get; set; }
-        public string ExperienceContent { get; set; }
-        public long ExperienceId { get; set; }
+        public long LocationDetailId { get; set; }
+        public bool LocationContentType { get; set; }
+        public string LocationContent { get; set; }
+        public string LocationImageName { get; set; }
+        public int LocationIndex { get; set; }
+        public long LocationId { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
         public string UpdatedBy { get; set; }

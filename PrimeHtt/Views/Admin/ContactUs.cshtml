@@ -1,0 +1,223 @@
+﻿@model PrimeHtt.Models.ViewModel.ContactUsViewModel
+@{
+    ViewBag.Title = "ContactUs";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Contact Us</h1>
+    </div>
+</div>
+
+@if (Model.IsContactExist)
+{
+    <form id="ContactUsForm" name="ContactUsForm" method="post">
+        <div class="row">
+            <div class="col-md-6 col-lg-3 col-lg-offset-3">
+                <div class="form-group">
+                    <label for="ContactName">Contact Name</label>
+                    <input type="text" id="ContactName" name="ContactName" class="form-control" placeholder="Enter Contact Name" value="@Model.ContactName"/>
+                    @Html.ValidationMessageFor(e => e.ContactName)
+                </div>
+                <div class="form-group">
+                    <label for="ContactAddress">Contact Address</label>
+                    <input type="text" id="ContactAddress" name="ContactAddress" class="form-control" placeholder="Enter Contact Address" value="@Model.ContactAddress"/>
+                    @Html.ValidationMessageFor(e => e.ContactAddress)
+                </div>
+                <p style="color:grey"><small>*Contact Name and Address will show on map.</small></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-9">
+                <button type="submit" class="btn btn-primary pull-right">Save</button>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <form id="ContactUsForm" name="ContactUsForm" method="post">
+        <div class="row">
+            <div class="col-md-6 col-lg-3 col-lg-offset-3">
+                <div class="form-group">
+                    <label for="ContactName">Contact Name</label>
+                    <input type="text" id="ContactName" name="ContactName" class="form-control" placeholder="Enter Contact Name" value="" />
+                    @Html.ValidationMessageFor(e => e.ContactName)
+                </div>
+                <div class="form-group">
+                    <label for="ContactAddress">Contact Address</label>
+                    <input type="text" id="ContactAddress" name="ContactAddress" class="form-control" placeholder="Enter Contact Address" value="" />
+                    @Html.ValidationMessageFor(e => e.ContactAddress)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-lg-9">
+                <button type="submit" class="btn btn-primary pull-right">Save</button>
+            </div>
+        </div>
+    </form>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>
+                Reservation Contact
+                <a href="@Url.Action("AddReservationContact", "Admin")" class="btn btn-primary pull-right">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add New Reservation Contact
+                </a>
+            </h1>
+        </div>
+        <div class="table-responsive">
+            <table id="ReservationContactTable" class="table table-bordered table-hover table-striped">
+                <thead>
+                <tr>
+                    <th data-column-id="ContactDetailId" data-identifier="true" data-visible="false">Reservation Contact Id</th>
+                    <th data-column-id="ReservationTitle">Reservation Title</th>
+                    <th data-column-id="ContactNumber">Contact Number</th>
+                    <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model != null && Model.ContactDetails.Count > 0)
+                {
+                    foreach (var item in Model.ContactDetails)
+                    {
+                        <tr>
+                            <td>@item.ContactDetailId</td>
+                            <td>@item.ReservationTitle</td>
+                            <td>@item.ContactNumber</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">
+                            No Reservation Contact.
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="reservation-column-bar hide">
+    <a href="@(Url.Action("EditReservationContact", "Admin", new {id = "{ContactDetailId}" }))" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Edit Reservation Contact"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="@(Url.Action("DeleteReservationContact", "Admin", new {id = "{ContactDetailId}" }))" class="btn btn-default delete-reservation-button" data-toggle="tooltip" data-placement="left" title="Delete Reservation Contact"><span class="glyphicon glyphicon-trash"></span></a>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>
+                Email Address
+                <a href="@Url.Action("AddEmailAddress", "Admin")" class="btn btn-primary pull-right">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add New Email Address
+                </a>
+            </h1>
+        </div>
+        <div class="table-responsive">
+            <table id="EmailAddressTable" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th data-column-id="ContactEmailId" data-identifier="true" data-visible="false">Contact Email Id</th>
+                        <th data-column-id="ContactEmailAddress">Email Address</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.ContactEmails.Count > 0)
+                    {
+                        foreach (var item in Model.ContactEmails)
+                        {
+                            <tr>
+                                <td>@item.ContactEmailId</td>
+                                <td>@item.ContactEmailAddress</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3">
+                                No Email.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="email-column-bar hide">
+    <a href="@(Url.Action("EditEmailAddress", "Admin", new {id = "{ContactEmailId}" }))" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Edit Email Address"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="@(Url.Action("DeleteEmailAddress", "Admin", new {id = "{ContactEmailId}" }))" class="btn btn-default delete-email-button" data-toggle="tooltip" data-placement="left" title="Delete Email Address"><span class="glyphicon glyphicon-trash"></span></a>
+</div>
+
+<script>
+    @if (Model.ContactDetails.Count > 0)
+    {
+        <text>
+    $("#ReservationContactTable").bootgrid({
+        ajax: false,
+        caseSensitive: false,
+        formatters: {
+            "ActionColumnBar": function (column, row) {
+                var el = $("div.reservation-column-bar").html();
+                el = el.replace("%7BContactDetailId%7D", row.ContactDetailId).replace("%7BContactDetailId%7D", row.ContactDetailId);
+                return el;
+            }
+        }
+    }).on("loaded.rs.jquery.bootgrid", function () {
+        $(this).find('[data-toggle="tooltip"]').tooltip();
+
+        $(this).find("a.delete-reservation-button").on("click", function (e) {
+            if (confirm("Do you want to delete the Reservation Contact?")) {
+                return true;
+            }
+
+            e.preventDefault();
+
+            return false;
+        });
+    });
+        </text>
+    }
+
+    @if (Model.ContactEmails.Count > 0)
+    {
+        <text>
+    $("#EmailAddressTable").bootgrid({
+        ajax: false,
+        caseSensitive: false,
+        formatters: {
+            "ActionColumnBar": function (column, row) {
+                var el = $("div.email-column-bar").html();
+                el = el.replace("%7BContactEmailId%7D", row.ContactEmailId).replace("%7BContactEmailId%7D", row.ContactEmailId);
+                return el;
+            }
+        }
+    }).on("loaded.rs.jquery.bootgrid", function () {
+        $(this).find('[data-toggle="tooltip"]').tooltip();
+
+        $(this).find("a.delete-email-button").on("click", function (e) {
+            if (confirm("Do you want to delete this Email Address?")) {
+                return true;
+            }
+
+            e.preventDefault();
+
+            return false;
+        });
+    });
+        </text>
+    }
+</script>

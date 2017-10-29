@@ -1,0 +1,111 @@
+﻿@model List<PrimeHtt.Models.ViewModel.SocialNetworkModel>
+
+@{
+    ViewBag.Title = "SocialNetworkList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Social Network List</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table id="SocialNetworkTable" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th data-column-id="No" data-identifier="true">No</th>
+                        <th data-column-id="SocialNetworkId" data-visible="false" data-visible-in-selection="false">SocialNetwork ID</th>
+                        <th data-column-id="SocialNetworkName">Social Network Name</th>
+                        <th data-column-id="SocialNetworkLink" data-width="300px">Link</th>
+                        <th data-column-id="Status">Status</th>
+                        <th data-column-id="DateAdded">Date Added</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int count = 0; }
+                    @foreach (var item in Model)
+                    {
+                        count++;
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.SocialNetworkId</td>
+                            <td>@item.SocialNetworkName</td>
+                            <td>@item.SocialNetworkLink</td>
+                            <td>@item.Status</td>
+                            <td>@item.DateAdded</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="action-column-bar hide">
+    <a href="@(Url.Action("EditSocialNetwork", "Admin", new { id = "{Id}" }))" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Update Social Network"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a onclick="deleteSocialNetwork('%7BId%7D')" class="btn btn-default delete-button" data-toggle="tooltip" data-placement="left" title="Delete Social Network"><span class="glyphicon glyphicon-trash"></span></a>
+</div>
+
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SocialNetworkTable").bootgrid({
+            formatters: {
+                "ActionColumnBar": function (column, row) {
+                    var el = $("div.action-column-bar").html();
+                    el = el.replace("%7BId%7D", row.SocialNetworkId).replace("%7BId%7D", row.SocialNetworkId).replace("%7BId%7D", row.SocialNetworkId).replace("%7BId%7D", row.SocialNetworkId);
+
+                    return el;
+                },
+            }
+        });
+    });
+
+    function deleteSocialNetwork(socialId)
+    {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to active this social network!",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes, delete it!",
+            confirmButtonColor: "#ec6c62"
+        },
+            function()
+            {
+                $('.loading').css('display', 'block');
+                $.ajax({
+                    url: "/Admin/DeleteSocialNetwork/",
+                    data:{
+                        "SocialNetworkId": socialId
+                    },
+                    type: "POST"
+                })
+                    .done(function(data)
+                    {
+                        $('.loading').css('display', 'none');
+                        sweetAlert({
+                            title: "Deleted!",
+                            text: "Social Network was successfully deleted!",
+                            type: "success"
+                        },
+                        function()
+                        {
+                            window.location.href = '/Admin/SocialNetworkList';
+                        });
+                    })
+                    .error(function(data)
+                    {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error");
+                    });
+            });
+    }
+</script>

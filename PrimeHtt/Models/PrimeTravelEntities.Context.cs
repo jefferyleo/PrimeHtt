@@ -13,11 +13,12 @@ namespace PrimeHtt.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class PrimetravelEntities : DbContext
+    public partial class PrimeTravelEntities : DbContext
     {
-        public PrimetravelEntities()
-            : base("name=PrimetravelEntities")
+        public PrimeTravelEntities()
+            : base("name=PrimeTravelEntities")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -27,12 +28,12 @@ namespace PrimeHtt.Models
     
         public virtual DbSet<AboutUs> AboutUs { get; set; }
         public virtual DbSet<Banner> Banner { get; set; }
-        public virtual DbSet<Configuration> Configuration { get; set; }
         public virtual DbSet<Contact> Contact { get; set; }
         public virtual DbSet<ContactDetail> ContactDetail { get; set; }
         public virtual DbSet<ContactEmail> ContactEmail { get; set; }
         public virtual DbSet<Experience> Experience { get; set; }
         public virtual DbSet<ExperienceDetail> ExperienceDetail { get; set; }
+        public virtual DbSet<PrimeConfiguration> PrimeConfiguration { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<ServiceInfo> ServiceInfo { get; set; }
         public virtual DbSet<SocialNetwork> SocialNetwork { get; set; }

@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "AddSocialNetwork";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Add New Social Network</h1>
+</div>
+
+<form id="AddNewSocialNetworkForm" style="color:#001a33;" name="AddNewSocialNetworkForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group">
+                <label class="control-label" for="SocialNetworkType" id="lblSocialNetworkType">Social Network Type</label>
+                <div class="input-group" style="width: 100%;">
+                    <select id="SocialNetworkType" name="SocialNetworkType" class="form-control input-md">
+                        <option selected="true" disabled="disabled">Please Select Social Network Type</option>
+                        <option value="fa-facebook/Facebook">Facebook</option>
+                        <option value="fa-twitter/Twitter">Twitter</option>
+                        <option value="fa-instagram/Instagram">Instagram</option>
+                        <option value="fa-linkedin/LinkedIn">LinkedIn</option>
+                        <option value="fa-youtube/YouTube">YouTube</option>
+                        <option value="fa-tumblr/Tumblr">Tumblr</option>
+                        <option value="fa-flickr/Flickr">Flickr</option>
+                        <option value="fa-reddit/Reddit">Reddit</option>
+                        <option value="fa-vine/Vine">Vine</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="SocialNetworkLink" id="lblSocialNetworkLink">Social Network Link</label>
+                <input type="text" id="SocialNetworkLink" name="SocialNetworkLink" class="form-control" placeholder="Enter Social Network Link" oninput="setCustomValidity('')" required />
+            </div>
+            <div class="form-group">
+                <label>Active Social Network now?</label>
+                <label class="checkbox-inline">
+                    <input id="IsActive" type="checkbox" checked> Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" id="addNewSocialNetwork" class="btn btn-primary pull-right">Add New Social Network</button>
+        </div>
+    </div>
+</form>
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#addNewSocialNetwork').click(function (e) {
+            e.preventDefault();
+            $('.loading').css('display', 'block');
+            var fullName = $('#SocialNetworkType').val();
+            var socialLink = $('#SocialNetworkLink').val();
+            var isActive = $('#IsActive').prop('checked');
+            if (fullName == null) {
+                $('#lblSocialNetworkType').html('<span class="asterisk">*Please Select Social Network Type</span>');
+            } else {
+                $("#lblSocialNetworkType .asterisk").remove();
+                $('#lblSocialNetworkType').html('Social Network Type');
+                var socialType = fullName.substr(0, fullName.indexOf("/"));
+                var socialName = fullName.substr((fullName.indexOf("/") + 1), (fullName.length - 1));
+            }
+
+            if (socialLink == "") {
+                $('#lblSocialNetworkLink').html('<span class="asterisk">*Please Enter Social Network Link</span>');
+            } else {
+                $("#lblSocialNetworkLink .asterisk").remove();
+                $('#lblSocialNetworkLink').html('Social Network Link');
+            }
+
+            if ($('.asterisk').val() == undefined) {
+                $.ajax({
+                    url: "/Admin/AddSocialNetwork",
+                    data: {
+                        "SocialNetworkName": socialName,
+                        "SocialNetworkType": socialType,
+                        "SocialNetworkLink": socialLink,
+                        "IsActive": isActive,
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal({
+                            title: "Done",
+                            text: "New Social Network was successfully added!",
+                            type: "success"
+                        },
+                        function () {
+                            window.location.href = '/Admin/SocialNetworkList';
+                        });
+                    },
+                    error: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error")
+                    }
+                });
+            } else {
+                $('.loading').css('display', 'none');
+            }
+        });
+    });
+</script>

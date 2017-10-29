@@ -19,6 +19,7 @@ namespace PrimeHtt.Models
         public string ServiceDescription { get; set; }
         public string ServiceImage { get; set; }
         public long ServiceId { get; set; }
+        public string ServiceImageName { get; set; }
     
         public virtual Service Service { get; set; }
     }

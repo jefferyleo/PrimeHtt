@@ -1,0 +1,256 @@
+﻿@model PrimeHtt.Models.ViewModel.AboutUsViewModel
+@{
+    ViewBag.Title = "AboutUs";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/Scripts/custom.js"></script>
+
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">About Us</h1>
+    </div>
+</div>
+<form id="AboutUsForm" name="AboutUsForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>About Us Title</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="divAboutUsTitle" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblAboutUsTitle" for="AboutUsTitle"></label>
+                    </div>
+                    <input id="AboutUsTitleInput" hidden value="@Model.AboutUsTitle"/>
+                    <textarea id="AboutUsTitle" name="AboutUsTitle"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>About Us Top Description</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="divAboutUsTopDescription" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblAboutUsTopDescription" for="AboutUsTopDescription"></label>
+                    </div>
+                    <input id="AboutUsTopDescriptionInput" hidden value="@Model.AboutUsTopDescription"/>
+                    <textarea id="AboutUsTopDescription" name="AboutUsTopDescription"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>About Us Image</strong>
+                </div>
+                <div class="panel-body">
+                    @if (Model == null)
+                    {
+                        <label>No image</label>
+                        <input type="file" id="AboutUsImage" name="AboutUsImage" accept="image/*" />
+                        <img id="showImage" style="width: 50%;border: grey solid 1px; display: none;margin-top: 5px" />
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrWhiteSpace(Model.AboutUsImageUrl))
+                        {
+                            <a href="@Model.AboutUsImageUrl" target="_blank" class="thumbnail">
+                                <img src="@Model.AboutUsImageUrl" alt="@Model.AboutUsTitle" />
+                            </a>
+                            <input type="file" class="btn" id="AboutUsImage" name="AboutUsImage" accept="image/*" />
+                            <img id="showImage" style="width: 50%;display: none; border: grey solid 1px;margin-top: 5px" />
+                        }
+                        else
+                        {
+                            <label>No image</label>
+                            <input type="file" id="AboutUsImage" name="AboutUsImage" accept="image/*" />
+                            <img id="showImage" style="width: 50%; display: none;margin-top: 5px" />
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>About Us Bottom Description</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="divAboutUsBottomDescription" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblAboutUsBottomDescription" for="AboutUsBottomDescription"></label>
+                    </div>
+                    <input id="AboutUsBottomDescriptionInput" hidden value="@Model.AboutUsBottomDescription"/>
+                    <textarea id="AboutUsBottomDescription" name="AboutUsBottomDescription"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="btnSave" class="btn btn-default">Save</button>
+</form>
+
+<script>
+    CKEDITOR.replace('AboutUsTitle',
+        {
+            startupFocus: false
+        });
+    CKEDITOR.replace('AboutUsTopDescription',
+        {
+            startupFocus: false
+        });
+    CKEDITOR.replace('AboutUsBottomDescription',
+        {
+            startupFocus: false
+        });
+
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#showImage').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $('#AboutUsImage').on('change', function() {
+        readURL(this);
+        $('#showImage').show();
+    });
+
+
+    $('#AboutUsImage').change(function(e) {
+        var fileSize;
+        var fileType;
+        fileSize = $('#AboutUsImage')[0].files[0].size;
+        fileType = $('#AboutUsImage')[0].files[0].type;
+        if (fileSize < 25000000) {
+            overSize = false;
+            switch (fileType) {
+            case 'image/png':
+                break;
+            case 'image/jpg':
+                break;
+            case 'image/jpeg':
+                break;
+            default:
+                alert('Unsupport format! Please insert image files only.');
+                $('#AboutUsImage').val("").change();
+            }
+        } else {
+            alert('This file is too large! Please select a new file.');
+            $('#AboutUsImage').val("").change();
+        }
+    });
+
+    @if (Model != null)
+    {
+        <text>
+            var aboutUsTitle = $('#AboutUsTitleInput').val();
+            var aboutUsTopDescription = $('#AboutUsTopDescriptionInput').val();
+            var aboutUsBottomDescription = $('#AboutUsBottomDescriptionInput').val();
+            var aboutUsImage = '@Model.AboutUsImageUrl';
+
+            CKEDITOR.on('instanceReady', function (evt) {
+                if (evt.editor.name === "AboutUsTitle") {
+                    CKEDITOR.instances['AboutUsTitle'].insertHtml(unescapeHtml(aboutUsTitle));
+                }
+                else if (evt.editor.name === "AboutUsTopDescription") {
+                    CKEDITOR.instances['AboutUsTopDescription'].insertHtml(unescapeHtml(aboutUsTopDescription));
+                }
+                else if (evt.editor.name === "AboutUsBottomDescription") {
+                    CKEDITOR.instances['AboutUsBottomDescription'].insertHtml(unescapeHtml(aboutUsBottomDescription));
+                }
+                CKEDITOR.instances['AboutUsTitle'].focus();
+                $(window).scrollTop(0);
+            });
+        </text>
+    }
+
+    $('#btnSave').click(function(e) {
+        e.preventDefault();
+
+        $('#divAboutUsTitle').hide();
+        $('#divAboutUsTopDescription').hide();
+        $('#divAboutUsBottomDescription').hide();
+
+        var formData = new FormData();
+        var totalFiles = document.getElementById("AboutUsImage").files.length;
+        if (totalFiles !== 0) {
+            var file = document.getElementById("AboutUsImage").files[0];
+            formData.append("AboutUsImage", file);
+        } else {
+            if ("@Model.AboutUsImageUrl" !== "") {
+
+            } else {
+                alert("Please insert About Us Image");
+                return false;
+            }
+        }
+
+        @if (Model == null)
+    {
+        <text>
+            formData.append("AboutUsId", 0);
+        </text>
+    }
+    else
+    {
+        <text>
+            formData.append("AboutUsId", @Model.AboutUsId);
+        </text>
+    }
+
+
+        formData.append("AboutUsTitle", CKEDITOR.instances['AboutUsTitle'].getData());
+        formData.append("AboutUsTopDescription", CKEDITOR.instances['AboutUsTopDescription'].getData());
+        formData.append("AboutUsBottomDescription", CKEDITOR.instances['AboutUsBottomDescription'].getData());
+
+        $.ajax({
+            type: "POST",
+            url: '/Admin/AboutUs',
+            data: formData,
+            dataType: 'json',
+            traditional: true,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.result == "success") {
+                    window.location.reload();
+                } else {
+                    DisplayErrors(response.Errors);
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    });
+
+    function DisplayErrors(errors) {
+        for (var i = 0; i < errors.length; i++) {
+            $('#div' + errors[i].Key + '').show();
+            $('#lbl'+ errors[i].Key +'')
+                .html(errors[i].Value[0]).appendTo($("input#" + errors[i].Key).parent());
+        }
+    }
+
+</script>

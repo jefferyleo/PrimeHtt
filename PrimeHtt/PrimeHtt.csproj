@@ -51,6 +51,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="GoogleMaps.LocationServices, Version=0.1.6329.16944, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleMaps.LocationServices.1.2.0.1\lib\net40\GoogleMaps.LocationServices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -60,10 +63,22 @@
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.3\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Edm.5.8.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.OData.5.8.2\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Services.Client, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.Services.Client.5.8.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -79,6 +94,13 @@
     <Reference Include="Microsoft.Owin.Security.OAuth, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=8.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.8.5.0\lib\net45\Microsoft.WindowsAzure.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -87,6 +109,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Spatial, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Spatial.5.8.2\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -147,9 +172,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -183,13 +205,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Authorization\GetAuthorization.cs" />
+    <Compile Include="Helper\Services\MetadataServices.cs" />
     <Compile Include="Models\AboutUs.cs">
       <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Banner.cs">
-      <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Configuration.cs">
       <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Contact.cs">
@@ -208,6 +229,9 @@
       <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModel.cs" />
+    <Compile Include="Models\PrimeConfiguration.cs">
+      <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PrimeTravelEntities.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -235,19 +259,39 @@
     <Compile Include="Models\User.cs">
       <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModel\AboutUsViewModel.cs" />
+    <Compile Include="Models\ViewModel\AddEmailAddress.cs" />
+    <Compile Include="Models\ViewModel\AddReservationContact.cs" />
+    <Compile Include="Models\ViewModel\BannerModel.cs" />
+    <Compile Include="Models\ViewModel\ContactUsViewModel.cs" />
+    <Compile Include="Models\ViewModel\ExperienceViewModel.cs" />
+    <Compile Include="Models\ViewModel\GalleryViewModel.cs" />
+    <Compile Include="Models\ViewModel\HomeModel.cs" />
     <Compile Include="Models\ViewModel\LoginViewModel.cs" />
     <Compile Include="Models\ViewModel\PasswordHash.cs" />
+    <Compile Include="Models\ViewModel\PrimeConfigurationModel.cs" />
+    <Compile Include="Models\ViewModel\ServiceInfoModel.cs" />
+    <Compile Include="Models\ViewModel\ServiceModel.cs" />
+    <Compile Include="Models\ViewModel\SocialNetworkModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\custom.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\jquery.bootgrid.css" />
+    <Content Include="Content\jquery.bootgrid.min.css" />
+    <Content Include="Content\lightgallery.css" />
+    <Content Include="Content\lightslider.css" />
+    <Content Include="Content\lightslider.min.css" />
     <Content Include="Content\metisMenu.css" />
     <Content Include="Content\metisMenu.min.css" />
     <Content Include="Content\morris.css" />
+    <Content Include="Content\portfolio-item.css" />
     <Content Include="Content\sb-admin-2.css" />
+    <Content Include="Content\sweetalert.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -289,25 +333,40 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\UserLogin\custom.min.css" />
+    <Content Include="Content\UserLogin\materialize.min.css" />
+    <Content Include="Content\UserLogin\page-center.css" />
+    <Content Include="Content\UserLogin\perfect-scrollbar.css" />
+    <Content Include="Content\UserLogin\prism.css" />
+    <Content Include="Content\UserLogin\style.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="GoogleMaps.LocationServices.readme.txt" />
     <Content Include="Models\PrimeTravelEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PrimeTravelEntities.Context.cs</LastGenOutput>
       <DependentUpon>PrimeTravelEntities.edmx</DependentUpon>
+      <LastGenOutput>PrimeTravelEntities.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Models\PrimeTravelEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>PrimeTravelEntities.edmx</DependentUpon>
       <LastGenOutput>PrimeTravelEntities.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\ai.0.15.0-build58334.js" />
+    <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="font\material-design-icons\Material-Design-Icons.woff" />
+    <Content Include="font\material-design-icons\Material-Design-Icons.ttf" />
+    <Content Include="Scripts\ckeditor.js" />
+    <Content Include="Scripts\config.js" />
+    <Content Include="Scripts\contents.css" />
+    <Content Include="Scripts\custom.js" />
     <EntityDeploy Include="Models\PrimeTravelEntities.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>PrimeTravelEntities.Designer.cs</LastGenOutput>
@@ -315,6 +374,7 @@
     <Content Include="Models\PrimeTravelEntities.edmx.diagram">
       <DependentUpon>PrimeTravelEntities.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\primehtt - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
@@ -322,20 +382,366 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.bootgrid.fa.js" />
+    <Content Include="Scripts\jquery.bootgrid.fa.min.js" />
+    <Content Include="Scripts\jquery.bootgrid.js" />
+    <Content Include="Scripts\jquery.bootgrid.min.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\lang\af.js" />
+    <Content Include="Scripts\lang\ar.js" />
+    <Content Include="Scripts\lang\az.js" />
+    <Content Include="Scripts\lang\bg.js" />
+    <Content Include="Scripts\lang\bn.js" />
+    <Content Include="Scripts\lang\bs.js" />
+    <Content Include="Scripts\lang\ca.js" />
+    <Content Include="Scripts\lang\cs.js" />
+    <Content Include="Scripts\lang\cy.js" />
+    <Content Include="Scripts\lang\da.js" />
+    <Content Include="Scripts\lang\de-ch.js" />
+    <Content Include="Scripts\lang\de.js" />
+    <Content Include="Scripts\lang\el.js" />
+    <Content Include="Scripts\lang\en-au.js" />
+    <Content Include="Scripts\lang\en-ca.js" />
+    <Content Include="Scripts\lang\en-gb.js" />
+    <Content Include="Scripts\lang\en.js" />
+    <Content Include="Scripts\lang\eo.js" />
+    <Content Include="Scripts\lang\es-mx.js" />
+    <Content Include="Scripts\lang\es.js" />
+    <Content Include="Scripts\lang\et.js" />
+    <Content Include="Scripts\lang\eu.js" />
+    <Content Include="Scripts\lang\fa.js" />
+    <Content Include="Scripts\lang\fi.js" />
+    <Content Include="Scripts\lang\fo.js" />
+    <Content Include="Scripts\lang\fr-ca.js" />
+    <Content Include="Scripts\lang\fr.js" />
+    <Content Include="Scripts\lang\gl.js" />
+    <Content Include="Scripts\lang\gu.js" />
+    <Content Include="Scripts\lang\he.js" />
+    <Content Include="Scripts\lang\hi.js" />
+    <Content Include="Scripts\lang\hr.js" />
+    <Content Include="Scripts\lang\hu.js" />
+    <Content Include="Scripts\lang\id.js" />
+    <Content Include="Scripts\lang\is.js" />
+    <Content Include="Scripts\lang\it.js" />
+    <Content Include="Scripts\lang\ja.js" />
+    <Content Include="Scripts\lang\ka.js" />
+    <Content Include="Scripts\lang\km.js" />
+    <Content Include="Scripts\lang\ko.js" />
+    <Content Include="Scripts\lang\ku.js" />
+    <Content Include="Scripts\lang\lt.js" />
+    <Content Include="Scripts\lang\lv.js" />
+    <Content Include="Scripts\lang\mk.js" />
+    <Content Include="Scripts\lang\mn.js" />
+    <Content Include="Scripts\lang\ms.js" />
+    <Content Include="Scripts\lang\nb.js" />
+    <Content Include="Scripts\lang\nl.js" />
+    <Content Include="Scripts\lang\no.js" />
+    <Content Include="Scripts\lang\oc.js" />
+    <Content Include="Scripts\lang\pl.js" />
+    <Content Include="Scripts\lang\pt-br.js" />
+    <Content Include="Scripts\lang\pt.js" />
+    <Content Include="Scripts\lang\ro.js" />
+    <Content Include="Scripts\lang\ru.js" />
+    <Content Include="Scripts\lang\si.js" />
+    <Content Include="Scripts\lang\sk.js" />
+    <Content Include="Scripts\lang\sl.js" />
+    <Content Include="Scripts\lang\sq.js" />
+    <Content Include="Scripts\lang\sr-latn.js" />
+    <Content Include="Scripts\lang\sr.js" />
+    <Content Include="Scripts\lang\sv.js" />
+    <Content Include="Scripts\lang\th.js" />
+    <Content Include="Scripts\lang\tr.js" />
+    <Content Include="Scripts\lang\tt.js" />
+    <Content Include="Scripts\lang\ug.js" />
+    <Content Include="Scripts\lang\uk.js" />
+    <Content Include="Scripts\lang\vi.js" />
+    <Content Include="Scripts\lang\zh-cn.js" />
+    <Content Include="Scripts\lang\zh.js" />
+    <Content Include="Scripts\lang\_translationstatus.txt" />
+    <Content Include="Scripts\lightslider.js" />
+    <Content Include="Scripts\lightslider.min.js" />
     <Content Include="Scripts\metisMenu.js" />
     <Content Include="Scripts\metisMenu.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\morris-data.js" />
     <Content Include="Scripts\morris.min.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\a11yhelp.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\af.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ar.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\az.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\bg.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ca.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\cs.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\cy.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\da.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\de-ch.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\de.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\el.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\en-gb.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\en.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\eo.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\es-mx.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\es.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\et.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\eu.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\fa.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\fi.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\fo.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\fr-ca.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\fr.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\gl.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\gu.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\he.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\hi.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\hr.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\hu.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\id.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\it.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ja.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\km.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ko.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ku.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\lt.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\lv.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\mk.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\mn.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\nb.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\nl.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\no.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\oc.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\pl.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\pt-br.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\pt.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ro.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ru.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\si.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\sk.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\sl.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\sq.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\sr-latn.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\sr.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\sv.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\th.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\tr.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\tt.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\ug.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\uk.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\vi.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\zh-cn.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\zh.js" />
+    <Content Include="Scripts\plugins\a11yhelp\dialogs\lang\_translationstatus.txt" />
+    <Content Include="Scripts\plugins\about\dialogs\about.js" />
+    <Content Include="Scripts\plugins\about\dialogs\hidpi\logo_ckeditor.png" />
+    <Content Include="Scripts\plugins\about\dialogs\logo_ckeditor.png" />
+    <Content Include="Scripts\plugins\colordialog\dialogs\colordialog.css" />
+    <Content Include="Scripts\plugins\colordialog\dialogs\colordialog.js" />
+    <Content Include="Scripts\plugins\copyformatting\cursors\cursor-disabled.svg" />
+    <Content Include="Scripts\plugins\copyformatting\cursors\cursor.svg" />
+    <Content Include="Scripts\plugins\copyformatting\styles\copyformatting.css" />
+    <Content Include="Scripts\plugins\dialog\dialogDefinition.js" />
+    <Content Include="Scripts\plugins\div\dialogs\div.js" />
+    <Content Include="Scripts\plugins\find\dialogs\find.js" />
+    <Content Include="Scripts\plugins\flash\dialogs\flash.js" />
+    <Content Include="Scripts\plugins\flash\images\placeholder.png" />
+    <Content Include="Scripts\plugins\forms\dialogs\button.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\checkbox.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\form.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\hiddenfield.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\radio.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\select.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\textarea.js" />
+    <Content Include="Scripts\plugins\forms\dialogs\textfield.js" />
+    <Content Include="Scripts\plugins\forms\images\hiddenfield.gif" />
+    <Content Include="Scripts\plugins\icons.png" />
+    <Content Include="Scripts\plugins\icons_hidpi.png" />
+    <Content Include="Scripts\plugins\iframe\dialogs\iframe.js" />
+    <Content Include="Scripts\plugins\iframe\images\placeholder.png" />
+    <Content Include="Scripts\plugins\image\dialogs\image.js" />
+    <Content Include="Scripts\plugins\image\images\noimage.png" />
+    <Content Include="Scripts\plugins\link\dialogs\anchor.js" />
+    <Content Include="Scripts\plugins\link\dialogs\link.js" />
+    <Content Include="Scripts\plugins\link\images\anchor.png" />
+    <Content Include="Scripts\plugins\link\images\hidpi\anchor.png" />
+    <Content Include="Scripts\plugins\liststyle\dialogs\liststyle.js" />
+    <Content Include="Scripts\plugins\magicline\images\hidpi\icon-rtl.png" />
+    <Content Include="Scripts\plugins\magicline\images\hidpi\icon.png" />
+    <Content Include="Scripts\plugins\magicline\images\icon-rtl.png" />
+    <Content Include="Scripts\plugins\magicline\images\icon.png" />
+    <Content Include="Scripts\plugins\pagebreak\images\pagebreak.gif" />
+    <Content Include="Scripts\plugins\pastefromword\filter\default.js" />
+    <Content Include="Scripts\plugins\preview\preview.html" />
+    <Content Include="Scripts\plugins\scayt\dialogs\dialog.css" />
+    <Content Include="Scripts\plugins\scayt\dialogs\options.js" />
+    <Content Include="Scripts\plugins\scayt\dialogs\toolbar.css" />
+    <Content Include="Scripts\plugins\scayt\skins\moono-lisa\scayt.css" />
+    <Content Include="Scripts\plugins\showblocks\images\block_address.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_blockquote.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_div.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_h1.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_h2.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_h3.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_h4.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_h5.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_h6.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_p.png" />
+    <Content Include="Scripts\plugins\showblocks\images\block_pre.png" />
+    <Content Include="Scripts\plugins\smiley\dialogs\smiley.js" />
+    <Content Include="Scripts\plugins\smiley\images\angel_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\angel_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\angry_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\angry_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\broken_heart.gif" />
+    <Content Include="Scripts\plugins\smiley\images\broken_heart.png" />
+    <Content Include="Scripts\plugins\smiley\images\confused_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\confused_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\cry_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\cry_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\devil_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\devil_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\embaressed_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\embarrassed_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\embarrassed_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\envelope.gif" />
+    <Content Include="Scripts\plugins\smiley\images\envelope.png" />
+    <Content Include="Scripts\plugins\smiley\images\heart.gif" />
+    <Content Include="Scripts\plugins\smiley\images\heart.png" />
+    <Content Include="Scripts\plugins\smiley\images\kiss.gif" />
+    <Content Include="Scripts\plugins\smiley\images\kiss.png" />
+    <Content Include="Scripts\plugins\smiley\images\lightbulb.gif" />
+    <Content Include="Scripts\plugins\smiley\images\lightbulb.png" />
+    <Content Include="Scripts\plugins\smiley\images\omg_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\omg_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\regular_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\regular_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\sad_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\sad_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\shades_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\shades_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\teeth_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\teeth_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\thumbs_down.gif" />
+    <Content Include="Scripts\plugins\smiley\images\thumbs_down.png" />
+    <Content Include="Scripts\plugins\smiley\images\thumbs_up.gif" />
+    <Content Include="Scripts\plugins\smiley\images\thumbs_up.png" />
+    <Content Include="Scripts\plugins\smiley\images\tongue_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\tongue_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\tounge_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\whatchutalkingabout_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\whatchutalkingabout_smile.png" />
+    <Content Include="Scripts\plugins\smiley\images\wink_smile.gif" />
+    <Content Include="Scripts\plugins\smiley\images\wink_smile.png" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\af.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ar.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\az.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\bg.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ca.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\cs.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\cy.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\da.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\de-ch.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\de.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\el.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\en-au.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\en-ca.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\en-gb.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\en.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\eo.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\es-mx.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\es.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\et.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\eu.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\fa.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\fi.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\fr-ca.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\fr.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\gl.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\he.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\hr.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\hu.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\id.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\it.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ja.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\km.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ko.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ku.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\lt.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\lv.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\nb.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\nl.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\no.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\oc.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\pl.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\pt-br.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\pt.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ru.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\si.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\sk.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\sl.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\sq.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\sv.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\th.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\tr.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\tt.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\ug.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\uk.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\vi.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\zh-cn.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\zh.js" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\lang\_translationstatus.txt" />
+    <Content Include="Scripts\plugins\specialchar\dialogs\specialchar.js" />
+    <Content Include="Scripts\plugins\tableselection\styles\tableselection.css" />
+    <Content Include="Scripts\plugins\tabletools\dialogs\tableCell.js" />
+    <Content Include="Scripts\plugins\table\dialogs\table.js" />
+    <Content Include="Scripts\plugins\templates\dialogs\templates.css" />
+    <Content Include="Scripts\plugins\templates\dialogs\templates.js" />
+    <Content Include="Scripts\plugins\templates\templates\default.js" />
+    <Content Include="Scripts\plugins\templates\templates\images\template1.gif" />
+    <Content Include="Scripts\plugins\templates\templates\images\template2.gif" />
+    <Content Include="Scripts\plugins\templates\templates\images\template3.gif" />
+    <Content Include="Scripts\plugins\wsc\dialogs\ciframe.html" />
+    <Content Include="Scripts\plugins\wsc\dialogs\tmpFrameset.html" />
+    <Content Include="Scripts\plugins\wsc\dialogs\wsc.css" />
+    <Content Include="Scripts\plugins\wsc\dialogs\wsc.js" />
+    <Content Include="Scripts\plugins\wsc\dialogs\wsc_ie.js" />
+    <Content Include="Scripts\plugins\wsc\skins\moono-lisa\wsc.css" />
+    <Content Include="Scripts\popper.js" />
+    <Content Include="Scripts\popper.min.js" />
     <Content Include="Scripts\raphael.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\sb-admin-2.js" />
+    <Content Include="Scripts\skins\moono-lisa\dialog.css" />
+    <Content Include="Scripts\skins\moono-lisa\dialog_ie.css" />
+    <Content Include="Scripts\skins\moono-lisa\dialog_ie8.css" />
+    <Content Include="Scripts\skins\moono-lisa\dialog_iequirks.css" />
+    <Content Include="Scripts\skins\moono-lisa\editor.css" />
+    <Content Include="Scripts\skins\moono-lisa\editor_gecko.css" />
+    <Content Include="Scripts\skins\moono-lisa\editor_ie.css" />
+    <Content Include="Scripts\skins\moono-lisa\editor_ie8.css" />
+    <Content Include="Scripts\skins\moono-lisa\editor_iequirks.css" />
+    <Content Include="Scripts\skins\moono-lisa\icons.png" />
+    <Content Include="Scripts\skins\moono-lisa\icons_hidpi.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\arrow.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\close.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\hidpi\close.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\hidpi\lock-open.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\hidpi\lock.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\hidpi\refresh.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\lock-open.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\lock.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\refresh.png" />
+    <Content Include="Scripts\skins\moono-lisa\images\spinner.gif" />
+    <Content Include="Scripts\styles.js" />
+    <Content Include="Scripts\sweetalert.min.js" />
+    <Content Include="Scripts\UserLogin\custom-script.js" />
+    <Content Include="Scripts\UserLogin\materialize.min.js" />
+    <Content Include="Scripts\UserLogin\perfect-scrollbar.min.js" />
+    <Content Include="Scripts\UserLogin\plugins.min.js" />
+    <Content Include="Scripts\UserLogin\prism.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -353,6 +759,32 @@
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\Login.cshtml" />
+    <Content Include="Views\Admin\AboutUs.cshtml" />
+    <Content Include="Scripts\plugins\scayt\CHANGELOG.md" />
+    <Content Include="Scripts\plugins\scayt\LICENSE.md" />
+    <Content Include="Scripts\plugins\wsc\LICENSE.md" />
+    <Content Include="Scripts\skins\moono-lisa\readme.md" />
+    <Content Include="Views\Admin\ContactUs.cshtml" />
+    <Content Include="Views\Admin\AddReservationContact.cshtml" />
+    <Content Include="Views\Admin\EditReservationContact.cshtml" />
+    <Content Include="Views\Admin\AddEmailAddress.cshtml" />
+    <Content Include="Views\Admin\EditEmailAddress.cshtml" />
+    <Content Include="Views\Admin\Experience.cshtml" />
+    <Content Include="Views\Admin\AddLocation.cshtml" />
+    <Content Include="Views\Admin\EditLocation.cshtml" />
+    <Content Include="Views\Admin\Gallery.cshtml" />
+    <Content Include="Views\Admin\AddGallery.cshtml" />
+    <Content Include="Views\Admin\EditGallery.cshtml" />
+    <Content Include="Views\Admin\AddBanner.cshtml" />
+    <Content Include="Views\Admin\AddService.cshtml" />
+    <Content Include="Views\Admin\AddSocialNetwork.cshtml" />
+    <Content Include="Views\Admin\BannerList.cshtml" />
+    <Content Include="Views\Admin\EditBanner.cshtml" />
+    <Content Include="Views\Admin\EditService.cshtml" />
+    <Content Include="Views\Admin\EditSocialNetwork.cshtml" />
+    <Content Include="Views\Admin\ServiceList.cshtml" />
+    <Content Include="Views\Admin\SocialNetworkList.cshtml" />
+    <Content Include="Views\Home\AboutUsReadMore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

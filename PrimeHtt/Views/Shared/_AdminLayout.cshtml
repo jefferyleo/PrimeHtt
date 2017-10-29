@@ -10,9 +10,10 @@
     <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
     <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
     <link href="~/Content/morris.css" rel="stylesheet" />
-
+    <link href="~/Content/jquery.bootgrid.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
-
+    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/custom.css" rel="stylesheet" />
 
     <script src="~/Scripts/jquery-2.2.4.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -20,15 +21,17 @@
     <script src="~/Scripts/metisMenu.min.js"></script>
     <script src="~/Scripts/sb-admin-2.js"></script>
     <script src="~/Scripts/raphael.min.js"></script>
+    <script src="~/Scripts/ckeditor.js"></script>
+    <script src="~/Scripts/jquery.bootgrid.js"></script>
     @*<script src="~/Scripts/morris.min.js"></script>
         <script src="~/Scripts/morris-data.js"></script>*@
-
+    <script src="~/Scripts/sweetalert.min.js"></script>
 </head>
 <body>
 
     <div id="wrapper">
         <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <nav id="topnav" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -38,7 +41,7 @@
                 </button>
                 @if (HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] == null)
                 {
-                    @Html.ActionLink("Prime Travel Admin Dashboard", "Login", "Admin", new { area = "" }, new { @class = "navbar-brand" })
+                    @*@Html.ActionLink("Prime Travel Admin Dashboard", "Login", "Admin", new { area = "" }, new { @class = "navbar-brand" })*@
                 }
                 else
                 {
@@ -49,36 +52,38 @@
             </div>
 
             <!-- /.navbar-header -->
-            <ul class="nav navbar-top-links navbar-right">
-                @if (HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] == null)
-                {
-                    <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Login", "Login", "Admin")</li>
-                    </ul>
-                }
-                else
-                {
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-user">
-                            <li>
-                                <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="@Url.Content("~/Admin/Logout")"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                                @*@Html.ActionLink("Logout", "Logout", "Admin", new { area = "" }, new { @class = "fa fa-sign-out fa-fw" })*@
-                            </li>
-                        </ul>
+            
+    @if (HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] == null)
+    {
+        <ul class="nav navbar-nav">
+            <li>@Html.ActionLink("Login", "Login", "Admin")</li>
+        </ul>
+    }
+    else
+    {
+        <ul class="nav navbar-top-links navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li>
+                        <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li>
-                }
+                    <li>
+                        <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="@Url.Content("~/Admin/Logout")"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        @*@Html.ActionLink("Logout", "Logout", "Admin", new { area = "" }, new { @class = "fa fa-sign-out fa-fw" })*@
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    }
 
-            </ul>
+            
 
             @if (HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] != null)
             {
@@ -86,7 +91,7 @@
                 <div class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-collapse">
                         <ul class="nav" id="side-menu">
-                            <li class="sidebar-search">
+                            @*<li class="sidebar-search">
                                 <div class="input-group custom-search-form">
                                     <input type="text" class="form-control" placeholder="Search...">
                                     <span class="input-group-btn">
@@ -95,94 +100,24 @@
                                         </button>
                                     </span>
                                 </div>
-                                <!-- /input-group -->
+                            </li>*@
+                            <li>
+                                <a href="@Url.Content("~/Admin/BannerList")"><i class="fa fa-picture-o fa-fw"></i>Banner</a>
                             </li>
                             <li>
-                                <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                                <a href="@Url.Content("~/Admin/AboutUs")"><i class="fa fa-info fa-fw"></i>About Us</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="flot.html">Flot Charts</a>
-                                    </li>
-                                    <li>
-                                        <a href="morris.html">Morris.js Charts</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
+                                <a href="@Url.Content("~/Admin/ServiceList")"><i class="fa fa-user fa-fw"></i>Service</a>
                             </li>
                             <li>
-                                <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
+                                <a href="@Url.Content("~/Admin/Experience")"><i class="fa fa-plane fa-fw"></i>Experiences</a>
                             </li>
                             <li>
-                                <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Forms</a>
+                                <a href="@Url.Content("~/Admin/ContactUs")"><i class="fa fa-phone fa-fw"></i>Contact Us</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="panels-wells.html">Panels and Wells</a>
-                                    </li>
-                                    <li>
-                                        <a href="buttons.html">Buttons</a>
-                                    </li>
-                                    <li>
-                                        <a href="notifications.html">Notifications</a>
-                                    </li>
-                                    <li>
-                                        <a href="typography.html">Typography</a>
-                                    </li>
-                                    <li>
-                                        <a href="icons.html"> Icons</a>
-                                    </li>
-                                    <li>
-                                        <a href="grid.html">Grid</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="#">Second Level Item</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Second Level Item</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level <span class="fa arrow"></span></a>
-                                        <ul class="nav nav-third-level">
-                                            <li>
-                                                <a href="#">Third Level Item</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Third Level Item</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Third Level Item</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">Third Level Item</a>
-                                            </li>
-                                        </ul>
-                                        <!-- /.nav-third-level -->
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="blank.html">Blank Page</a>
-                                    </li>
-                                    <li>
-                                        <a href="login.html">Login Page</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
+                                <a href="@Url.Content("~/Admin/SocialNetworkList")"><i class="fa fa-globe fa-fw"></i>Social Network</a>
                             </li>
                         </ul>
                     </div>
@@ -207,9 +142,9 @@
         <!-- /#page-wrapper -->
 
     </div>
-    <footer>
-        <p>&copy; @DateTime.Now.Year - Prime Travel</p>
-    </footer>
+<footer>
+    <p>&copy; @DateTime.Now.Year - Prime Travel</p>
+</footer>
     <!-- /#wrapper -->
 </body>
 </html>

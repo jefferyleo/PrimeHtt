@@ -24,5 +24,6 @@ namespace PrimeHtt.Models
         public string UpdatedBy { get; set; }
         public System.DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public string AboutUsImageName { get; set; }
     }
 }

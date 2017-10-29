@@ -16,7 +16,6 @@ namespace PrimeHtt.Models
     {
         public long SocialNetworkId { get; set; }
         public string SocialNetworkName { get; set; }
-        public string SocialNetworkIcon { get; set; }
         public string SocialNetworkLink { get; set; }
         public bool IsActive { get; set; }
         public string CreatedBy { get; set; }
@@ -24,5 +23,6 @@ namespace PrimeHtt.Models
         public string UpdatedBy { get; set; }
         public System.DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public string SocialNetworkType { get; set; }
     }
 }

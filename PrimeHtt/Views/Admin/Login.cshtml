@@ -1,41 +1,97 @@
 ﻿@model PrimeHtt.Models.ViewModel.LoginViewModel
 @{
     ViewBag.Title = "Login";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = null;
 }
+<head>
+   
 
-<div class="row" style="padding-top: 70px; padding-bottom: 70px;">
-    <div class="col-md-4 col-md-offset-4">
-        <div class="panel panel-danger">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Prime Travel
-                </h3>
+
+    <!-- CORE CSS-->
+
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/UserLogin/materialize.min.css" rel="stylesheet" />
+    <link href="~/Content/UserLogin/style.min.css" rel="stylesheet" />
+    <!-- Custome CSS-->    
+    <link href="~/Content/UserLogin/custom.min.css" rel="stylesheet" />
+    <link href="~/Content/UserLogin/page-center.css" rel="stylesheet" />
+
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="~/Content/UserLogin/prism.css" rel="stylesheet" />
+    <link href="~/Content/UserLogin/perfect-scrollbar.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+  
+</head>
+
+<body class="cyan">
+<!-- Start Page Loading -->
+@*<div id="loader-wrapper">
+    <div id="loader"></div>        
+    <div class="loader-section section-left"></div>
+    <div class="loader-section section-right"></div>
+</div>*@
+<!-- End Page Loading -->
+
+
+
+<div id="login-page" class="row">
+    <div class="col s12 z-depth-4 card-panel">
+        <form class="login-form" method="post">
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
+            @if (ViewBag.LoginStatus != null)
+            {
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <strong>Error!</strong> @ViewBag.LoginStatus
+                </div>
+            }
+            <div class="row">
+                <div class="input-field col s12 center">
+                    <img src="images/login-logo.png" alt="" class="circle responsive-img valign profile-image-login">
+                    <p class="center login-form-text">Prime Travel Admin Login</p>
+                </div>
             </div>
-            <div class="panel-body">
-                <form id="LoginForm" name="LoginForm" method="post" @*action="@Url.Content("~/Admin/Login")"*@>
-                    @Html.ValidationSummary(true)
-                    @Html.AntiForgeryToken()
-                    @if (ViewBag.LoginStatus != null)
-                    {
-                        <div class="alert alert-danger alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            <strong>Error!</strong> @ViewBag.LoginStatus
-                        </div>
-                    }
-                    <div class="form-group">
-                        <label for="Username">Username</label>
-                        <input type="text" id="Username" name="Username" class="form-control" placeholder="Enter your Username" />
-                    </div>
-                    <div class="form-group">
-                        <label for="Password">Password</label>
-                        <input type="password" id="Password" name="Password" class="form-control" placeholder="Enter your password" />
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" id="LoginButton" name="LoginButton" value="Login" class="btn btn-primary btn-block" />
-                    </div>
-                </form>
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="fa fa-user prefix"></i>
+                    <input id="username" name="Username" type="text">
+                    <label for="username" class="center-align">Username</label>
+                </div>
             </div>
-        </div>
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-action-lock-outline prefix"></i>
+                    <input id="password" name="Password" type="password">
+                    <label for="password">Password</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    @*<a href="index.html" class="btn waves-effect waves-light col s12">Login</a>*@
+                    <input type="submit" id="LoginButton" name="LoginButton" value="Login" class="btn waves-effect waves-light col s12" style="padding-top: 8px;" />
+                </div>
+            </div>
+
+        </form>
     </div>
 </div>
+
+<!--materialize js-->
+    <script src="~/Scripts/jquery-2.2.4.min.js"></script>
+    <script src="~/Scripts/UserLogin/materialize.min.js"></script>
+<!--prism-->
+    <script src="~/Scripts/UserLogin/prism.js"></script>
+<!--scrollbar-->
+    <script src="~/Scripts/UserLogin/perfect-scrollbar.min.js"></script>
+
+<!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    <script src="~/Scripts/UserLogin/plugins.min.js"></script>
+<!--custom-script.js - Add your own theme custom JS-->
+    <script src="~/Scripts/UserLogin/custom-script.js"></script>
+
+</body>
+
+<script>
+    $('#topnav').hide();
+</script>

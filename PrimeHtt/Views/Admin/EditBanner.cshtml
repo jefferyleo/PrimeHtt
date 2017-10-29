@@ -1,0 +1,106 @@
+﻿@model PrimeHtt.Models.ViewModel.BannerModel
+
+@{
+    ViewBag.Title = "EditBanner";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Edit Banner</h1>
+</div>
+
+<form id="EditBannerForm" style="color:#001a33;" name="EditBannerForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group" style="display: none">
+                <input id="BannerId" name="BannerId" value="@Model.BannerId"/>
+            </div>
+            <div class="form-group">
+                <label for="BannerDescription">Banner Description</label>
+                <input id="Description" name="Description" value="@Model.BannerDescription" hidden/>
+                <textarea id="BannerDescription" name="BannerDescription"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="BannerImage" id="lblBannerImage">Banner Image</label>
+                <input type="file" id="BannerImage" name="BannerImage" accept="image/png, image/jpeg, image/jpg" oninput="setCustomValidity('')" onchange="document.getElementById('showPromo').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
+                <i style="color:crimson;">** Recommended Image Resolution 2048px*1152px</i>
+                <br />
+                <img id="showPromo" style="width:50%;" src="@Model.BImage" />
+            </div>
+            <div class="form-group">
+                <label>Active on Banner Slide now?</label>
+                <label class="checkbox-inline">
+                    <input id="IsActive" type="checkbox"> Yes
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" id="editBanner" class="btn btn-primary pull-right">Edit Banner</button>
+        </div>
+    </div>
+</form>
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#IsActive').prop('checked', @Model.Status);
+        var desc = $('#Description').val();
+        CKEDITOR.replace('BannerDescription');
+        CKEDITOR.on('instanceReady', function (evt) {
+            CKEDITOR.instances['BannerDescription'].insertHtml(unescapeHtml(desc));
+        });
+
+        $('#editBanner').click(function (e) {
+            e.preventDefault();
+            $('.loading').css('display', 'block');
+            var image = document.getElementById('BannerImage').files[0];
+            var formData = new FormData();
+            if(image == undefined){
+                formData.append('BannerId', $('#BannerId').val());
+                formData.append('BannerDescription', CKEDITOR.instances['BannerDescription'].getData());
+                formData.append('IsActive', $('#IsActive').prop('checked'));
+            }else{
+                formData.append('BannerId', $('#BannerId').val());
+                formData.append('BannerDescription', CKEDITOR.instances['BannerDescription'].getData());
+                formData.append('BannerImage', document.getElementById('BannerImage').files[0]);
+                formData.append('IsActive', $('#IsActive').prop('checked'));
+            }
+            
+
+            if ($('.asterisk').val() == undefined) {
+                $.ajax({
+                    url: "/Admin/EditBanner",
+                    contentType: false,
+                    processData: false,
+                    traditional: true,
+                    dataType: 'json',
+                    data: formData,
+                    type: "POST",
+                    success: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal({
+                            title: "Done",
+                            text: "Banner was successfully edited!",
+                            type: "success"
+                        },
+                        function () {
+                            window.location.href = '/Admin/BannerList';
+                        });
+                    },
+                    error: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error")
+                    }
+                });
+            } else {
+                $('.loading').css('display', 'none');
+            }
+        });
+    });
+</script>
+
+

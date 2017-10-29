@@ -1,0 +1,152 @@
+﻿@model PrimeHtt.Models.ViewModel.GalleryViewModel
+@{
+    ViewBag.Title = "Gallery";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h1>
+                @if (Model.LocationId != 0 && Model.LocationName != "")
+                {
+                    <text>
+                        Experience Gallery - @Model.LocationName
+                        <a href="@Url.Action("AddGallery", "Admin", new{id = Model.LocationId})" class="btn btn-primary pull-right">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add Gallery
+                        </a>
+                    </text>
+                }
+                else
+                {
+                    <text>
+                        Experience Gallery
+                        <a href="@Url.Action("AddGallery", "Admin")" class="btn btn-primary pull-right">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add Gallery
+                        </a>
+                    </text>
+                }
+
+                
+            </h1>
+        </div>
+        <div class="table-responsive">
+            <table id="GalleryTable" class="table table-bordered table-hover table-striped">
+                <thead>
+                <tr>
+                    @if (Model.LocationId != 0 && Model.LocationName != "")
+                    {
+                        <th data-column-id="LocationDetailId" data-identifier="true" data-visible="false">Id</th>
+                        <th data-column-id="ContentType">Content Type</th>
+                        <th data-column-id="LocationContent" data-formatter="ViewImage">Content</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    }
+                    else
+                    {
+                        <th data-column-id="LocationDetailId" data-identifier="true" data-visible="false">Id</th>
+                        <th data-column-id="ContentType">Content Type</th>
+                        <th data-column-id="LocationName">LocationName</th>
+                        <th data-column-id="LocationContent" data-formatter="ViewImage">Content</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    }
+                </tr>
+                </thead>
+                <tbody>
+                @if (Model != null && Model.Galleries.Count > 0)
+                {
+                    if (Model.LocationId != 0 && Model.LocationName != "")
+                    {
+                        foreach (var item in Model.Galleries)
+                        {
+                            <tr>
+                                <td>@item.LocationDetailId</td>
+                                <td>@item.ContentType</td>
+                                @if (item.ContentType == "Image")
+                                {
+                                    <td>@item.LocationContent</td>
+                                }
+                                else
+                                {
+                                    <td>@item.LocationContent</td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in Model.Galleries)
+                        {
+                            <tr>
+                                <td>@item.LocationDetailId</td>
+                                <td>@item.ContentType</td>
+                                <td>@item.LocationName</td>
+                                @if (item.ContentType == "Image")
+                                {
+                                    <td>@item.LocationContent</td>
+                                }
+                                else
+                                {
+                                    <td>@item.LocationContent</td>
+                                }
+                            </tr>
+                        }
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">
+                            No Content yet.
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="action-column-bar hide">
+    <a href="@(Url.Action("EditGallery", "Admin", new {id = "{LocationDetailId}" }))" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Edit Gallery"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="@(Url.Action("DeleteGallery", "Admin", new {id = "{LocationDetailId}", LocationId = "{LocationId}"}))" class="btn btn-default delete-gallery-button" data-toggle="tooltip" data-placement="left" title="Delete Gallery"><span class="glyphicon glyphicon-trash"></span></a>
+</div>
+
+<script>
+    @if (Model.Galleries.Count > 0)
+    {
+        <text>
+    $("#GalleryTable").bootgrid({
+                ajax: false,
+                caseSensitive: false,
+                formatters: {
+                    "ActionColumnBar": function (column, row) {
+                        var el = $("div.action-column-bar").html();
+                        el = el.replace("%7BLocationDetailId%7D", row.LocationDetailId).replace("%7BLocationDetailId%7D", row.LocationDetailId).replace("%7BLocationId%7D", @Model.LocationId);
+                        return el;
+                    },
+                    "ViewImage": function(column, row) {
+                        if (row.ContentType === "Image") {
+                            return('<img style="width:200px; height:100px;" src="' + row.LocationContent + '" />');
+                        } else {
+                            return row.LocationContent;
+                        }
+                    }
+                }
+            }).on("loaded.rs.jquery.bootgrid", function () {
+                $(this).find('[data-toggle="tooltip"]').tooltip();
+
+                $(this).find("a.delete-gallery-button").on("click", function (e) {
+                    if (confirm("Do you want to delete the gallery?")) {
+                        return true;
+                    }
+
+                    e.preventDefault();
+
+                    return false;
+                });
+            });
+        </text>
+    }
+</script>

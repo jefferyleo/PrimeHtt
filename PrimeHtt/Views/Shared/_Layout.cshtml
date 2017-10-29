@@ -1,42 +1,109 @@
-﻿<!DOCTYPE html>
+﻿@using PrimeHtt.Models
+@using PrimeHtt.Models.ViewModel
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Prime Travel</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
+    <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
+    <link href="~/Content/morris.css" rel="stylesheet" />
+    <link href="~/Content/jquery.bootgrid.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
+    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/custom.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-2.2.4.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/metisMenu.min.js"></script>
+    <script src="~/Scripts/sb-admin-2.js"></script>
+    <script src="~/Scripts/raphael.min.js"></script>
+    <script src="~/Scripts/ckeditor.js"></script>
+    <script src="~/Scripts/jquery.bootgrid.js"></script>
+    @*<script src="~/Scripts/morris.min.js"></script>
+        <script src="~/Scripts/morris-data.js"></script>*@
+    <script src="~/Scripts/sweetalert.min.js"></script>
+    <script type="text/javascript">
+        var appInsights=window.appInsights||function(config){
+            function r(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s=u.createElement(o),i,f;for(s.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js",u.getElementsByTagName(o)[0].parentNode.appendChild(s),t.cookie=u.cookie,t.queue=[],i=["Event","Exception","Metric","PageView","Trace"];i.length;)r("track"+i.pop());return r("setAuthenticatedUserContext"),r("clearAuthenticatedUserContext"),config.disableExceptionTracking||(i="onerror",r("_"+i),f=e[i],e[i]=function(config,r,u,e,o){var s=f&&f(config,r,u,e,o);return s!==!0&&t["_"+i](config,r,u,e,o),s}),t
+        }({
+            instrumentationKey:"0eb88fab-692c-429f-862c-7942c10a73ff"
+        });
+        
+        window.appInsights=appInsights;
+        appInsights.trackPageView();
+    </script>
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
+<body style="font-family: 'Amaranth';">
+<div class="navbar navbar-fixed-top" style="background-color: #f7f7f7; border-color: #e6e6e6;">
+    <div class="container" style="margin: 10px;">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" style="border: 1px solid #6699ff;">
+                <span class="icon-bar" style="background-color: #6699ff;"></span>
+                <span class="icon-bar" style="background-color: #6699ff;"></span>
+                <span class="icon-bar" style="background-color: #6699ff;"></span>
+            </button>
+            <img src="~/img/58779_logo_0_56027.png" style="width: 60px; margin-left: 20px;"/>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse" style="font-size: 15px;">
+            <ul class="navbar-nav ml-auto nav navbar-right">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#home">
+                        HOME
+                        @*<span class="sr-only">(current)</span>*@
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">ABOUT THE FOUNDER</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#services">SERVICES</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#experiences">EXPERIENCES</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">CONTACT US</a>
+                </li>
+            </ul>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+</div>
+<div class="body-content" style="margin-top: 70px;">
+    @RenderBody()
+    <hr />
+    <footer class="wrapper style1 align-center">
+        <div class="inner">
+            <ul class="icons">
+                @{
+                    using (var db = new PrimeTravelEntities())
+                    {
+                        var social = (from i in db.SocialNetwork
+                            where i.IsActive == true && i.IsDeleted == false
+                            select new SocialNetworkModel()
+                            {
+                                SocialNetworkId = i.SocialNetworkId,
+                                SocialNetworkLink = i.SocialNetworkLink,
+                                SocialNetworkName = i.SocialNetworkName,
+                                SocialNetworkType = i.SocialNetworkType,
+                            }).ToList();
 
-    @*@Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")*@
-    @RenderSection("scripts", required: false)
+                        for (int item = 0; item < social.Count(); item++)
+                        {
+                            var setClass = "icon2 style2 " + social[item].SocialNetworkType;
+                            <li><a href="@social[item].SocialNetworkLink"  target="_blank" class="@setClass" style="color: #000;"><span class="label">@social[item].SocialNetworkName</span></a></li>
+                        }
+                    }
+                }
+            </ul>
+            <p>Copyright &copy; @DateTime.Now.Year. All Rights Reserved by H.T.T.Travel (M) Sdn.Bhd</p>
+        </div>
+    </footer>
+</div>
 </body>
 </html>

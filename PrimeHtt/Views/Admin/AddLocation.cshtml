@@ -1,0 +1,36 @@
+﻿@model PrimeHtt.Models.ViewModel.AddLocationViewModel
+@{
+    ViewBag.Title = "AddLocation";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form id="AddLocation" name="AddLocation" method="post">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <h1 class="page-header">Add Location</h1>
+        </div>
+        <div class="col-md-6 col-lg-3 col-lg-offset-3">
+            <div class="form-group">
+                <label for="LocationName">Location Name</label>
+                <input type="text" id="LocationName" name="LocationName" class="form-control" placeholder="Enter Location Name" value="@Model.LocationName" />
+                @Html.ValidationMessageFor(e => e.LocationName)
+            </div>
+            <div class="form-group">
+                <label for="Latitude">Location Latitude</label>
+                <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Enter Location Latitude" value="@Model.Latitude" />
+                @Html.ValidationMessageFor(e => e.Latitude)
+            </div>
+            <div class="form-group">
+                <label for="Longitude">Location Longitude</label>
+                <input type="text" id="Longitude" name="Longitude" class="form-control" placeholder="Enter Location Longitude" value="@Model.Longitude" />
+                @Html.ValidationMessageFor(e => e.Longitude)
+            </div>
+            <p style="color:grey"><small>*Latitude and Longitude can leave empty.</small></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" class="btn btn-primary pull-right">Add</button>
+        </div>
+    </div>
+</form>

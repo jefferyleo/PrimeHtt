@@ -15,7 +15,7 @@ namespace PrimeHtt.Models
     public partial class ContactEmail
     {
         public long ContactEmailId { get; set; }
-        public string ContactEmail1 { get; set; }
+        public string ContactEmailAddress { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
         public string UpdatedBy { get; set; }

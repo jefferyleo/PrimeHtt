@@ -1,0 +1,110 @@
+﻿@model PrimeHtt.Models.ViewModel.AddGalleryViewModel
+
+@{
+    ViewBag.Title = "AddGallery";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form id="AddGallery" name="AddGallery" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <h1 class="page-header">Add Gallery</h1>
+        </div>
+        <div class="col-md-6 col-lg-3 col-lg-offset-3">
+            <div class="form-group">
+                <label for="LocationId">Location Name</label>
+                @Html.DropDownList("LocationId", Model.LocationName, new { @class = "form-control", @id = "ddlLocation" })
+            </div>
+            <div class="form-group">
+                <label for="ContentType">Gallery Type</label>
+                @*@Html.DropDownListFor(
+                    e => e.LocationContentType, new SelectList(new List<Object>{ new { value = 0 , text = "Image"  },new { value = 1 , text = "Video" }}, "value","text", Model.LocationContentType))*@
+                @Html.DropDownListFor(model => model.LocationContentType,
+                    new List<SelectListItem> {
+                        new SelectListItem { Value = "false" , Text = "Image" },
+                        new SelectListItem { Value = "true" , Text = "Video" },
+                    },
+                    new { @class= "form-control", @id="ddlContentType" })
+            </div>
+            <div id="divContentImage" class="form-group">
+                <input type="file" class="btn" id="ContentImage" name="ContentImage" accept="image/*" />
+                <img id="showImage" style="width: 50%; display: none;margin-top: 5px" />
+            </div>
+            <div id="ContentVideo" class="form-group" hidden>
+                <label for="LocationContent">Video Link</label>
+                <input type="text" id="LocationContent" name="LocationContent" class="form-control" placeholder="Enter Video Link" value="@Model.LocationContent"/>
+                @Html.ValidationMessageFor(e => e.LocationContent)
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" class="btn btn-primary pull-right">Add</button>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    @if (Model.LocationId != 0)
+    {
+        <text>
+    $('ddlLocation>option[value="' + @Model.LocationId + '"]').prop('selected', true);
+        </text>
+    }
+
+    $('#ddlContentType').change(function() {
+        if ($('option:selected', this).text() === "Image") {
+            $('#divContentImage').show();
+            $('#ContentVideo').hide();
+        }
+        else if ($('option:selected', this).text() === "Video") {
+            $('#ContentVideo').show();
+            $('#divContentImage').hide();
+        }
+    });
+
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#showImage').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $('#ContentImage').on('change', function () {
+        readURL(this);
+        $('#showImage').show();
+    });
+
+
+    $('#ContentImage').change(function (e) {
+        var fileSize;
+        var fileType;
+        fileSize = $('#ContentImage')[0].files[0].size;
+        fileType = $('#ContentImage')[0].files[0].type;
+        if (fileSize < 25000000) {
+            overSize = false;
+            switch (fileType) {
+            case 'image/png':
+                break;
+            case 'image/jpg':
+                break;
+            case 'image/jpeg':
+                break;
+            default:
+                alert('Unsupport format! Please insert image files only.');
+                $('#ContentImage').val("").change();
+            }
+        } else {
+            alert('This file is too large! Please select a new file.');
+            $('#ContentImage').val("").change();
+        }
+    });
+</script>

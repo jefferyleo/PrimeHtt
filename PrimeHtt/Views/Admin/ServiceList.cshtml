@@ -1,0 +1,171 @@
+﻿@model List<PrimeHtt.Models.ViewModel.ServiceModel>
+
+@{
+    ViewBag.Title = "Service List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <h1 class="page-header">Service List</h1>
+</div>
+
+<form id="ChangeServiceTitleForm" style="color:#001a33;" name="ChangeServiceTitleForm" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group">
+                <label for="ServiceTitle" id="lblServiceTitle">Service Title</label>
+                <input type="text" id="ServiceTitle" name="ServiceTitle" value="@Model[0].ServiceTitle.ConfigurationValue" class="form-control" placeholder="Enter Service Title" oninput="setCustomValidity('')" required />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-9">
+            <button type="submit" id="changeServiceTitle" class="btn btn-primary pull-right">Change Service Title</button>
+        </div>
+    </div>
+</form>
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            <table id="ServiceTable" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th data-column-id="No" data-identifier="true">No</th>
+                        <th data-column-id="ServiceId" data-visible="false" data-visible-in-selection="false">Service ID</th>
+                        <th data-column-id="SImage" data-formatter="pix">Service Image</th>
+                        <th data-column-id="ServiceType" data-width="300px">ServiceType</th>
+                        <th data-column-id="DateAdded">Date Added</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int count = 0; }
+                    @foreach (var item in Model)
+                    {
+                        count++;
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.ServiceId</td>
+                            <td>@item.SIImage.SImage</td>
+                            <td>@item.ServiceType</td>
+                            <td>@item.DateAdded</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="action-column-bar hide">
+    <a href="@(Url.Action("EditService", "Admin", new { id = "{Id}" }))" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Update Service"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a onclick="deleteService('%7BId%7D')" class="btn btn-default delete-button" data-toggle="tooltip" data-placement="left" title="Delete Service"><span class="glyphicon glyphicon-trash"></span></a>
+</div>
+
+<div class="loading" style="display:none;z-index:100000">
+    <div id="loader"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ServiceTable").bootgrid({
+            formatters: {
+                "ActionColumnBar": function (column, row) {
+                    var el = $("div.action-column-bar").html();
+                    el = el.replace("%7BId%7D", row.ServiceId).replace("%7BId%7D", row.ServiceId).replace("%7BId%7D", row.ServiceId).replace("%7BId%7D", row.ServiceId);
+
+                    return el;
+                },
+                "pix": function (column, row) {
+                    return "<img src='" + row.SImage + "' style='width:150px; height:250px;' />";
+                }
+            }
+        });
+
+        $('#changeServiceTitle').click(function (e) {
+            e.preventDefault();
+            $('.loading').css('display', 'block');
+            var title = $('#ServiceTitle').val();
+
+            if (title == "") {
+                $('#lblServiceTitle').html('<span class="asterisk">*Please Enter Service Title</span>');
+            } else {
+                $("#lblServiceTitle .asterisk").remove();
+                $('#lblServiceTitle').html('Service Title');
+            }
+
+            if ($('.asterisk').val() == undefined) {
+                $.ajax({
+                    url: "/Admin/ChangeServiceTitle",
+                    data: {
+                        "ServiceTitle" : title
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal({
+                            title: "Done",
+                            text: "Service Title was successfully updated!",
+                            type: "success"
+                        },
+                        function () {
+                            window.location.href = '/Admin/ServiceList';
+                        });
+                    },
+                    error: function (data) {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error")
+                    }
+                });
+            } else {
+                $('.loading').css('display', 'none');
+            }
+        });
+    });
+
+    function deleteService(serviceId)
+    {
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to active this banner!",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes, delete it!",
+            confirmButtonColor: "#ec6c62"
+        },
+            function()
+            {
+                $('.loading').css('display', 'block');
+                $.ajax({
+                    url: "/Admin/DeleteService/",
+                    data:{
+                        "ServiceId": serviceId
+                    },
+                    type: "POST"
+                })
+                    .done(function(data)
+                    {
+                        $('.loading').css('display', 'none');
+                        sweetAlert({
+                            title: "Deleted!",
+                            text: "Service was successfully deleted!",
+                            type: "success"
+                        },
+                        function()
+                        {
+                            window.location.href = '/Admin/ServiceList';
+                        });
+                    })
+                    .error(function(data)
+                    {
+                        $('.loading').css('display', 'none');
+                        swal("Oops", "We couldn't connect to the server!", "error");
+                    });
+            });
+    }
+</script>
