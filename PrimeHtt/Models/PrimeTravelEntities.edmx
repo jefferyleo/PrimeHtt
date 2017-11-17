@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PrimeTravelModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="PrimeTravelModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AboutUs">
           <Key>
             <PropertyRef Name="AboutUsId" />
@@ -50,6 +50,7 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="UpdatedAt" Type="datetime" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="ContactTitle" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="ContactDetail">
           <Key>
@@ -142,6 +143,20 @@
           <Property Name="ServiceImage" Type="nvarchar(max)" />
           <Property Name="ServiceId" Type="bigint" Nullable="false" />
           <Property Name="ServiceImageName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ServiceViewMore">
+          <Key>
+            <PropertyRef Name="ServiceViewMoreId" />
+          </Key>
+          <Property Name="ServiceViewMoreId" Type="bigint" Nullable="false" />
+          <Property Name="ServiceImage" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ServiceId" Type="bigint" Nullable="false" />
+          <Property Name="ServiceImageName" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
         <EntityType Name="SocialNetwork">
           <Key>
@@ -170,6 +185,9 @@
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="UpdatedAt" Type="datetime" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="IsPasswordChanging" Type="bit" Nullable="false" />
+          <Property Name="NewPassword" Type="nvarchar" MaxLength="128" />
+          <Property Name="NewUsername" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <Association Name="fk_ExperienceExperienceDetail_LocationId">
           <End Role="Experience" Type="Self.Experience" Multiplicity="1" />
@@ -191,6 +209,18 @@
               <PropertyRef Name="ServiceId" />
             </Principal>
             <Dependent Role="ServiceInfo">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ServiceServiceViewMore_ServiceId">
+          <End Role="Service" Type="Self.Service" Multiplicity="1" />
+          <End Role="ServiceViewMore" Type="Self.ServiceViewMore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Service">
+              <PropertyRef Name="ServiceId" />
+            </Principal>
+            <Dependent Role="ServiceViewMore">
               <PropertyRef Name="ServiceId" />
             </Dependent>
           </ReferentialConstraint>
@@ -206,6 +236,7 @@
           <EntitySet Name="PrimeConfiguration" EntityType="Self.PrimeConfiguration" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Service" EntityType="Self.Service" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ServiceInfo" EntityType="Self.ServiceInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ServiceViewMore" EntityType="Self.ServiceViewMore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SocialNetwork" EntityType="Self.SocialNetwork" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="fk_ExperienceExperienceDetail_LocationId" Association="Self.fk_ExperienceExperienceDetail_LocationId">
@@ -216,68 +247,99 @@
             <End Role="Service" EntitySet="Service" />
             <End Role="ServiceInfo" EntitySet="ServiceInfo" />
           </AssociationSet>
+          <AssociationSet Name="fk_ServiceServiceViewMore_ServiceId" Association="Self.fk_ServiceServiceViewMore_ServiceId">
+            <End Role="Service" EntitySet="Service" />
+            <End Role="ServiceViewMore" EntitySet="ServiceViewMore" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PrimeTravelModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="PrimeTravelEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AboutUs" EntityType="PrimeTravelModel.AboutUs" />
+          <EntitySet Name="Banner" EntityType="PrimeTravelModel.Banner" />
+          <EntitySet Name="Contact" EntityType="PrimeTravelModel.Contact" />
+          <EntitySet Name="ContactDetail" EntityType="PrimeTravelModel.ContactDetail" />
+          <EntitySet Name="ContactEmail" EntityType="PrimeTravelModel.ContactEmail" />
+          <EntitySet Name="Experience" EntityType="PrimeTravelModel.Experience" />
+          <EntitySet Name="ExperienceDetail" EntityType="PrimeTravelModel.ExperienceDetail" />
+          <EntitySet Name="PrimeConfiguration" EntityType="PrimeTravelModel.PrimeConfiguration" />
+          <EntitySet Name="Service" EntityType="PrimeTravelModel.Service" />
+          <EntitySet Name="ServiceInfo" EntityType="PrimeTravelModel.ServiceInfo" />
+          <EntitySet Name="ServiceViewMore" EntityType="PrimeTravelModel.ServiceViewMore" />
+          <EntitySet Name="SocialNetwork" EntityType="PrimeTravelModel.SocialNetwork" />
+          <EntitySet Name="User" EntityType="PrimeTravelModel.User" />
+          <AssociationSet Name="fk_ExperienceExperienceDetail_LocationId" Association="PrimeTravelModel.fk_ExperienceExperienceDetail_LocationId">
+            <End Role="Experience" EntitySet="Experience" />
+            <End Role="ExperienceDetail" EntitySet="ExperienceDetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ServiceServiceInfo_ServiceId" Association="PrimeTravelModel.fk_ServiceServiceInfo_ServiceId">
+            <End Role="Service" EntitySet="Service" />
+            <End Role="ServiceInfo" EntitySet="ServiceInfo" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ServiceServiceViewMore_ServiceId" Association="PrimeTravelModel.fk_ServiceServiceViewMore_ServiceId">
+            <End Role="Service" EntitySet="Service" />
+            <End Role="ServiceViewMore" EntitySet="ServiceViewMore" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="AboutUs">
           <Key>
             <PropertyRef Name="AboutUsId" />
           </Key>
           <Property Name="AboutUsId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AboutUsTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AboutUsTopDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AboutUsBottomDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AboutUsImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AboutUsTitle" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AboutUsTopDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AboutUsBottomDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AboutUsImage" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="AboutUsImageName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AboutUsImageName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Banner">
           <Key>
             <PropertyRef Name="BannerId" />
           </Key>
           <Property Name="BannerId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BannerImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="BannerDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="BannerImage" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BannerDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="BannerImageName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="BannerImageName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Contact">
           <Key>
             <PropertyRef Name="ContactId" />
           </Key>
           <Property Name="ContactId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ContactName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ContactAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContactName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContactAddress" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ContactLatitude" Type="Double" Nullable="false" />
           <Property Name="ContactLongitude" Type="Double" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="ContactTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ContactDetail">
           <Key>
             <PropertyRef Name="ContactDetailId" />
           </Key>
           <Property Name="ContactDetailId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ReservationTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ContactNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReservationTitle" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContactNumber" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
@@ -286,10 +348,10 @@
             <PropertyRef Name="ContactEmailId" />
           </Key>
           <Property Name="ContactEmailId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ContactEmailAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContactEmailAddress" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
@@ -298,16 +360,16 @@
             <PropertyRef Name="LocationId" />
           </Key>
           <Property Name="LocationId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="LocationName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CountryName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LocationName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Latitude" Type="Double" Nullable="false" />
           <Property Name="Longitude" Type="Double" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ExperienceDetail" Relationship="Self.fk_ExperienceExperienceDetail_LocationId" FromRole="Experience" ToRole="ExperienceDetail" />
+          <NavigationProperty Name="ExperienceDetail" Relationship="PrimeTravelModel.fk_ExperienceExperienceDetail_LocationId" FromRole="Experience" ToRole="ExperienceDetail" />
         </EntityType>
         <EntityType Name="ExperienceDetail">
           <Key>
@@ -315,27 +377,27 @@
           </Key>
           <Property Name="LocationDetailId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="LocationContentType" Type="Boolean" Nullable="false" />
-          <Property Name="LocationContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LocationContent" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LocationImageName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LocationIndex" Type="Int32" Nullable="false" />
           <Property Name="LocationId" Type="Int64" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Experience" Relationship="Self.fk_ExperienceExperienceDetail_LocationId" FromRole="ExperienceDetail" ToRole="Experience" />
+          <NavigationProperty Name="Experience" Relationship="PrimeTravelModel.fk_ExperienceExperienceDetail_LocationId" FromRole="ExperienceDetail" ToRole="Experience" />
         </EntityType>
         <EntityType Name="PrimeConfiguration">
           <Key>
             <PropertyRef Name="ConfigurationId" />
           </Key>
           <Property Name="ConfigurationId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ConfigurationName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ConfigurationValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ConfigurationName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ConfigurationValue" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
@@ -344,57 +406,76 @@
             <PropertyRef Name="ServiceId" />
           </Key>
           <Property Name="ServiceId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ServiceType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ServiceType" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ServiceInfo" Relationship="Self.fk_ServiceServiceInfo_ServiceId" FromRole="Service" ToRole="ServiceInfo" />
+          <NavigationProperty Name="ServiceInfo" Relationship="PrimeTravelModel.fk_ServiceServiceInfo_ServiceId" FromRole="Service" ToRole="ServiceInfo" />
+          <NavigationProperty Name="ServiceViewMore" Relationship="PrimeTravelModel.fk_ServiceServiceViewMore_ServiceId" FromRole="Service" ToRole="ServiceViewMore" />
         </EntityType>
         <EntityType Name="ServiceInfo">
           <Key>
             <PropertyRef Name="ServiceInfoId" />
           </Key>
           <Property Name="ServiceInfoId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ServiceName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ServiceName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ServiceDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ServiceImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ServiceId" Type="Int64" Nullable="false" />
-          <Property Name="ServiceImageName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Service" Relationship="Self.fk_ServiceServiceInfo_ServiceId" FromRole="ServiceInfo" ToRole="Service" />
+          <Property Name="ServiceImageName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Service" Relationship="PrimeTravelModel.fk_ServiceServiceInfo_ServiceId" FromRole="ServiceInfo" ToRole="Service" />
+        </EntityType>
+        <EntityType Name="ServiceViewMore">
+          <Key>
+            <PropertyRef Name="ServiceViewMoreId" />
+          </Key>
+          <Property Name="ServiceViewMoreId" Type="Int64" Nullable="false" />
+          <Property Name="ServiceImage" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ServiceId" Type="Int64" Nullable="false" />
+          <Property Name="ServiceImageName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Service" Relationship="PrimeTravelModel.fk_ServiceServiceViewMore_ServiceId" FromRole="ServiceViewMore" ToRole="Service" />
         </EntityType>
         <EntityType Name="SocialNetwork">
           <Key>
             <PropertyRef Name="SocialNetworkId" />
           </Key>
           <Property Name="SocialNetworkId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SocialNetworkName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SocialNetworkLink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SocialNetworkName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SocialNetworkLink" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="SocialNetworkType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SocialNetworkType" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UpdatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="IsPasswordChanging" Type="Boolean" Nullable="false" />
+          <Property Name="NewPassword" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="NewUsername" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="fk_ExperienceExperienceDetail_LocationId">
-          <End Role="Experience" Type="Self.Experience" Multiplicity="1" />
-          <End Role="ExperienceDetail" Type="Self.ExperienceDetail" Multiplicity="*" />
+          <End Type="PrimeTravelModel.Experience" Role="Experience" Multiplicity="1" />
+          <End Type="PrimeTravelModel.ExperienceDetail" Role="ExperienceDetail" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Experience">
               <PropertyRef Name="LocationId" />
@@ -405,8 +486,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_ServiceServiceInfo_ServiceId">
-          <End Role="Service" Type="Self.Service" Multiplicity="1" />
-          <End Role="ServiceInfo" Type="Self.ServiceInfo" Multiplicity="*" />
+          <End Type="PrimeTravelModel.Service" Role="Service" Multiplicity="1" />
+          <End Type="PrimeTravelModel.ServiceInfo" Role="ServiceInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Service">
               <PropertyRef Name="ServiceId" />
@@ -416,29 +497,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="PrimeTravelEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="AboutUs" EntityType="Self.AboutUs" />
-          <EntitySet Name="Banner" EntityType="Self.Banner" />
-          <EntitySet Name="Contact" EntityType="Self.Contact" />
-          <EntitySet Name="ContactDetail" EntityType="Self.ContactDetail" />
-          <EntitySet Name="ContactEmail" EntityType="Self.ContactEmail" />
-          <EntitySet Name="Experience" EntityType="Self.Experience" />
-          <EntitySet Name="ExperienceDetail" EntityType="Self.ExperienceDetail" />
-          <EntitySet Name="PrimeConfiguration" EntityType="Self.PrimeConfiguration" />
-          <EntitySet Name="Service" EntityType="Self.Service" />
-          <EntitySet Name="ServiceInfo" EntityType="Self.ServiceInfo" />
-          <EntitySet Name="SocialNetwork" EntityType="Self.SocialNetwork" />
-          <EntitySet Name="User" EntityType="Self.User" />
-          <AssociationSet Name="fk_ExperienceExperienceDetail_LocationId" Association="Self.fk_ExperienceExperienceDetail_LocationId">
-            <End Role="Experience" EntitySet="Experience" />
-            <End Role="ExperienceDetail" EntitySet="ExperienceDetail" />
-          </AssociationSet>
-          <AssociationSet Name="fk_ServiceServiceInfo_ServiceId" Association="Self.fk_ServiceServiceInfo_ServiceId">
-            <End Role="Service" EntitySet="Service" />
-            <End Role="ServiceInfo" EntitySet="ServiceInfo" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        <Association Name="fk_ServiceServiceViewMore_ServiceId">
+          <End Type="PrimeTravelModel.Service" Role="Service" Multiplicity="1" />
+          <End Type="PrimeTravelModel.ServiceViewMore" Role="ServiceViewMore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Service">
+              <PropertyRef Name="ServiceId" />
+            </Principal>
+            <Dependent Role="ServiceViewMore">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -447,178 +518,197 @@
           <EntitySetMapping Name="AboutUs">
             <EntityTypeMapping TypeName="PrimeTravelModel.AboutUs">
               <MappingFragment StoreEntitySet="AboutUs">
-                <ScalarProperty Name="AboutUsId" ColumnName="AboutUsId" />
-                <ScalarProperty Name="AboutUsTitle" ColumnName="AboutUsTitle" />
-                <ScalarProperty Name="AboutUsTopDescription" ColumnName="AboutUsTopDescription" />
-                <ScalarProperty Name="AboutUsBottomDescription" ColumnName="AboutUsBottomDescription" />
-                <ScalarProperty Name="AboutUsImage" ColumnName="AboutUsImage" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="AboutUsImageName" ColumnName="AboutUsImageName" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="AboutUsImage" ColumnName="AboutUsImage" />
+                <ScalarProperty Name="AboutUsBottomDescription" ColumnName="AboutUsBottomDescription" />
+                <ScalarProperty Name="AboutUsTopDescription" ColumnName="AboutUsTopDescription" />
+                <ScalarProperty Name="AboutUsTitle" ColumnName="AboutUsTitle" />
+                <ScalarProperty Name="AboutUsId" ColumnName="AboutUsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Banner">
             <EntityTypeMapping TypeName="PrimeTravelModel.Banner">
               <MappingFragment StoreEntitySet="Banner">
-                <ScalarProperty Name="BannerId" ColumnName="BannerId" />
-                <ScalarProperty Name="BannerImage" ColumnName="BannerImage" />
-                <ScalarProperty Name="BannerDescription" ColumnName="BannerDescription" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="BannerImageName" ColumnName="BannerImageName" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="BannerDescription" ColumnName="BannerDescription" />
+                <ScalarProperty Name="BannerImage" ColumnName="BannerImage" />
+                <ScalarProperty Name="BannerId" ColumnName="BannerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Contact">
             <EntityTypeMapping TypeName="PrimeTravelModel.Contact">
               <MappingFragment StoreEntitySet="Contact">
-                <ScalarProperty Name="ContactId" ColumnName="ContactId" />
-                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
-                <ScalarProperty Name="ContactAddress" ColumnName="ContactAddress" />
-                <ScalarProperty Name="ContactLatitude" ColumnName="ContactLatitude" />
-                <ScalarProperty Name="ContactLongitude" ColumnName="ContactLongitude" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="ContactTitle" ColumnName="ContactTitle" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ContactLongitude" ColumnName="ContactLongitude" />
+                <ScalarProperty Name="ContactLatitude" ColumnName="ContactLatitude" />
+                <ScalarProperty Name="ContactAddress" ColumnName="ContactAddress" />
+                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+                <ScalarProperty Name="ContactId" ColumnName="ContactId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ContactDetail">
             <EntityTypeMapping TypeName="PrimeTravelModel.ContactDetail">
               <MappingFragment StoreEntitySet="ContactDetail">
-                <ScalarProperty Name="ContactDetailId" ColumnName="ContactDetailId" />
-                <ScalarProperty Name="ReservationTitle" ColumnName="ReservationTitle" />
-                <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+                <ScalarProperty Name="ReservationTitle" ColumnName="ReservationTitle" />
+                <ScalarProperty Name="ContactDetailId" ColumnName="ContactDetailId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ContactEmail">
             <EntityTypeMapping TypeName="PrimeTravelModel.ContactEmail">
               <MappingFragment StoreEntitySet="ContactEmail">
-                <ScalarProperty Name="ContactEmailId" ColumnName="ContactEmailId" />
-                <ScalarProperty Name="ContactEmailAddress" ColumnName="ContactEmailAddress" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ContactEmailAddress" ColumnName="ContactEmailAddress" />
+                <ScalarProperty Name="ContactEmailId" ColumnName="ContactEmailId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Experience">
             <EntityTypeMapping TypeName="PrimeTravelModel.Experience">
               <MappingFragment StoreEntitySet="Experience">
-                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
-                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
-                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
-                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
-                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ExperienceDetail">
             <EntityTypeMapping TypeName="PrimeTravelModel.ExperienceDetail">
               <MappingFragment StoreEntitySet="ExperienceDetail">
-                <ScalarProperty Name="LocationDetailId" ColumnName="LocationDetailId" />
-                <ScalarProperty Name="LocationContentType" ColumnName="LocationContentType" />
-                <ScalarProperty Name="LocationContent" ColumnName="LocationContent" />
-                <ScalarProperty Name="LocationImageName" ColumnName="LocationImageName" />
-                <ScalarProperty Name="LocationIndex" ColumnName="LocationIndex" />
-                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="LocationIndex" ColumnName="LocationIndex" />
+                <ScalarProperty Name="LocationImageName" ColumnName="LocationImageName" />
+                <ScalarProperty Name="LocationContent" ColumnName="LocationContent" />
+                <ScalarProperty Name="LocationContentType" ColumnName="LocationContentType" />
+                <ScalarProperty Name="LocationDetailId" ColumnName="LocationDetailId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PrimeConfiguration">
             <EntityTypeMapping TypeName="PrimeTravelModel.PrimeConfiguration">
               <MappingFragment StoreEntitySet="PrimeConfiguration">
-                <ScalarProperty Name="ConfigurationId" ColumnName="ConfigurationId" />
-                <ScalarProperty Name="ConfigurationName" ColumnName="ConfigurationName" />
-                <ScalarProperty Name="ConfigurationValue" ColumnName="ConfigurationValue" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ConfigurationValue" ColumnName="ConfigurationValue" />
+                <ScalarProperty Name="ConfigurationName" ColumnName="ConfigurationName" />
+                <ScalarProperty Name="ConfigurationId" ColumnName="ConfigurationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Service">
             <EntityTypeMapping TypeName="PrimeTravelModel.Service">
               <MappingFragment StoreEntitySet="Service">
-                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
-                <ScalarProperty Name="ServiceType" ColumnName="ServiceType" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ServiceType" ColumnName="ServiceType" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ServiceInfo">
             <EntityTypeMapping TypeName="PrimeTravelModel.ServiceInfo">
               <MappingFragment StoreEntitySet="ServiceInfo">
-                <ScalarProperty Name="ServiceInfoId" ColumnName="ServiceInfoId" />
-                <ScalarProperty Name="ServiceName" ColumnName="ServiceName" />
-                <ScalarProperty Name="ServiceDescription" ColumnName="ServiceDescription" />
-                <ScalarProperty Name="ServiceImage" ColumnName="ServiceImage" />
-                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ServiceImageName" ColumnName="ServiceImageName" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="ServiceImage" ColumnName="ServiceImage" />
+                <ScalarProperty Name="ServiceDescription" ColumnName="ServiceDescription" />
+                <ScalarProperty Name="ServiceName" ColumnName="ServiceName" />
+                <ScalarProperty Name="ServiceInfoId" ColumnName="ServiceInfoId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ServiceViewMore">
+            <EntityTypeMapping TypeName="PrimeTravelModel.ServiceViewMore">
+              <MappingFragment StoreEntitySet="ServiceViewMore">
+                <ScalarProperty Name="ServiceImageName" ColumnName="ServiceImageName" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="ServiceImage" ColumnName="ServiceImage" />
+                <ScalarProperty Name="ServiceViewMoreId" ColumnName="ServiceViewMoreId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SocialNetwork">
             <EntityTypeMapping TypeName="PrimeTravelModel.SocialNetwork">
               <MappingFragment StoreEntitySet="SocialNetwork">
-                <ScalarProperty Name="SocialNetworkId" ColumnName="SocialNetworkId" />
-                <ScalarProperty Name="SocialNetworkName" ColumnName="SocialNetworkName" />
-                <ScalarProperty Name="SocialNetworkLink" ColumnName="SocialNetworkLink" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="SocialNetworkType" ColumnName="SocialNetworkType" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SocialNetworkLink" ColumnName="SocialNetworkLink" />
+                <ScalarProperty Name="SocialNetworkName" ColumnName="SocialNetworkName" />
+                <ScalarProperty Name="SocialNetworkId" ColumnName="SocialNetworkId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="PrimeTravelModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="NewUsername" ColumnName="NewUsername" />
+                <ScalarProperty Name="NewPassword" ColumnName="NewPassword" />
+                <ScalarProperty Name="IsPasswordChanging" ColumnName="IsPasswordChanging" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

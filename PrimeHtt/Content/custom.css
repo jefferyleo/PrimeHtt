@@ -121,18 +121,14 @@ a.icon2.style2:active:before {
     text-shadow: none;
     padding-left: 10px;
     padding-right: 10px;
-}
-
-@media screen and (max-width: 480px) {
-    .bannerText{
-        background: rgba(255, 255, 255, 0.6); 
-        margin-bottom: 20px; 
-        color: #000;
-        font-size: 7px; 
-        text-shadow: none;
-        padding-left: 10px;
-        padding-right: 10px;
-    }   
+    /*background: rgba(255, 255, 255, 0.6);
+    margin-bottom: 60px;
+    color: #000;
+    text-shadow: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: -130px;
+    margin-right: 200px;*/
 }
 
 ul, .ul-default {
@@ -165,7 +161,7 @@ figure img { display: block; }
 	background: rgba(0,0,0,0.6);
 	bottom: 0;
 	color: #fff;
-	height: 100px;
+	height: 114px;
 	left: 0;
 	overflow: hidden;
 	padding: 20px;
@@ -194,22 +190,10 @@ figure img { display: block; }
     text-align: left;
 }
 
-@media screen and (max-width: 375px) {
-    .ulFont{
-        font-size: 12px;
-        text-align: left;
-    }
-}
-
-@media screen and (max-width: 320px) {
-    .ulFont{
-        font-size: 10px;
-        text-align: left;
-    }
-}
-
 .tabBackground{
     background-color: #f7f7f7;
+    padding-top: 60px;
+    padding-bottom: 60px;
 }
 
 .txtNew h2 {
@@ -238,11 +222,11 @@ figure img { display: block; }
     margin-right: -100px;
 }
 
-    .leftContact span {
-        width: 100%;
-        text-align: center;
-        -webkit-transform: rotateX(-180deg);
-    }
+.leftContact span {
+    width: 100%;
+    text-align: center;
+    -webkit-transform: rotateX(-180deg);
+}
 
 .rightContact {
     width: 100%;
@@ -252,12 +236,274 @@ figure img { display: block; }
     margin-left: -80px;
 }
 
-    .rightContact span {
-        width: 100%;
-        text-align: center;
-        -webkit-transform: rotate(-180deg) rotateX(-180deg);
-    }
+.rightContact span {
+    width: 100%;
+    text-align: center;
+    -webkit-transform: rotate(-180deg) rotateX(-180deg);
+}
 
 .field-validation-error {
     color:Red;
+}
+
+.slashCover{
+    position: absolute;
+    /*top: 0;
+    left: 0;
+    width: 90px;
+    height: 400px;*/
+    background-color: transparent;
+    border-top: 430px solid #f7f7f7;
+    border-right: 130px solid transparent;
+    z-index: 2;
+}
+
+.addressStyle{
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+.cardStyle1{
+    width:32%; 
+    display: inline-block;
+}
+
+.cardStyle2{
+    width:32%; 
+    display: inline-block; 
+    margin: 10px;
+}
+
+.card-action { padding-top: 0.3em; }
+		
+.viewmore
+{
+	background-color: #0a96f7;
+	border-color: #0a96f7;
+	border-radius: 10px;
+	color: #fff;
+	padding: 0.6em 0.8em;
+}
+.viewmore:hover { background-color: #0a96f7; }
+
+
+.aboutContent {
+    padding: 0px 100px; 
+    margin: 20px 0px;
+}
+
+.logoImage{
+    width: 400px;
+}
+
+@media screen and (max-width: 360px) {
+    .ulFont{
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .card-reveal .card-title
+    {
+	    color: inherit;
+	    font-size: 18px;
+	    font-weight: 400;
+	    text-align: center;
+	    text-transform: uppercase;
+    }
+
+    .cardStyle1{
+        width:90%; 
+        display: inline-block;
+    }
+
+    .cardStyle2{
+        width:90%; 
+        display: inline-block; 
+        margin: 10px;
+    }
+
+    .card-reveal
+    {
+	    background: #000;
+	    background: rgba(0,0,0,0.6);
+	    bottom: 0;
+	    color: #fff;
+	    height: 100px;
+	    left: 0;
+	    overflow: hidden;
+	    padding: 15px;
+	    position: absolute;
+	    transition: height 0.3s ease-in-out;
+	    width: 100%;
+    }
+
+    .card-action { margin-top: -12px; }
+}
+
+@media screen and (min-width: 361px) and (max-width: 480px) {
+    .ulFont{
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .card-reveal .card-title
+    {
+	    color: inherit;
+	    font-size: 18px;
+	    font-weight: 400;
+	    text-align: center;
+	    text-transform: uppercase;
+    }
+
+    .cardStyle1{
+        width:82%; 
+        display: inline-block;
+    }
+
+    .cardStyle2{
+        width:82%; 
+        display: inline-block; 
+        margin: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .bannerText{
+        background: rgba(255, 255, 255, 0.6); 
+        margin-bottom: 20px; 
+        color: #000;
+        font-size: 7px; 
+        text-shadow: none;
+        padding-left: 10px;
+        padding-right: 10px;
+    }   
+
+    .slashCover{
+        position: absolute;
+        background-color: transparent;
+        border-top: 430px solid #f7f7f7;
+        border-right: 120px solid transparent;
+        z-index: 2;
+    }
+
+    .addressStyle{
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    /*.ulFont{
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .card-reveal .card-title
+    {
+	    color: inherit;
+	    font-size: 18px;
+	    font-weight: 400;
+	    text-align: center;
+	    text-transform: uppercase;
+    }
+
+    .cardStyle1{
+        width:82%; 
+        display: inline-block;
+    }
+
+    .cardStyle2{
+        width:82%; 
+        display: inline-block; 
+        margin: 10px;
+    }*/
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .ulFont{
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .card-reveal .card-title
+    {
+	    color: inherit;
+	    font-size: 20px;
+	    font-weight: 400;
+	    text-align: center;
+	    text-transform: uppercase;
+    }
+
+    .card-action { margin-top: -10px; }
+}
+
+@media screen and (min-width: 481px) and (max-width: 991px) {
+    .slashCover{
+        position: absolute;
+        background-color: transparent;
+        border-top: 420px solid #f7f7f7;
+        border-right: 130px solid transparent;
+        z-index: 2;
+    }
+
+    /*.card-reveal .card-title
+    {
+	    color: inherit;
+	    font-size: 20px;
+	    font-weight: 400;
+	    text-align: center;
+	    text-transform: uppercase;
+    }
+
+    .ulFont{
+        font-size: 15px;
+        text-align: left;
+    }*/
+
+    .cardStyle1{
+        width:82%; 
+        display: inline-block;
+    }
+
+    .cardStyle2{
+        width:82%; 
+        display: inline-block; 
+        margin: 10px;
+    }
+}
+
+@media screen and (min-width: 991px) and (max-width: 1199px) {
+    /*.ulFont{
+        font-size: 12px;
+        text-align: left;
+    }*/
+}
+
+@media screen and (max-width: 738px) {
+    .aboutContent {
+        padding: 10px; 
+        margin: 10px;
+    }
+}
+
+@media screen and (min-width: 374px) and (max-width: 414px){
+    .logoImage{
+        width: 300px;
+        margin-top: 4px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (min-width: 359px) and (max-width: 375px){
+    .logoImage{
+        width: 280px;
+        margin-top: 6px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 360px){
+    .logoImage{
+        width: 250px;
+        margin-top: 8px;
+        margin-left: 5px;
+    }
 }

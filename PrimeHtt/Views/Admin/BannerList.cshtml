@@ -5,7 +5,13 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <div class="row">
-    <h1 class="page-header">Banner List</h1>
+    <h1 class="page-header">
+        Banner List
+        <a href="@Url.Action("AddBanner", "Admin")" class="btn btn-primary pull-right">
+            <span class="glyphicon glyphicon-plus"></span>
+            Add New Banner
+        </a>
+    </h1>
 </div>
 
 <div class="row">

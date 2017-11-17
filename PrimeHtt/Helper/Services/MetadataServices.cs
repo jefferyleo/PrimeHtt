@@ -43,7 +43,7 @@ namespace PrimeHtt.Helper.Services
 
             var fileName = imageFile.FileName;
             var getFileName = fileName.Substring(0, fileName.IndexOf('.'));
-            string newfileName = fileName + "-" + GetDateWithoutSlash();
+            string newfileName = GetDateWithoutSlash() + "-" + fileName;
             CloudBlockBlob blockBlob = setContainer.GetBlockBlobReference(newfileName);
             blockBlob.Properties.ContentType = "image/jpeg";
             //if (!blockBlob.Exists())

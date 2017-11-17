@@ -1,4 +1,5 @@
-﻿@model List<PrimeHtt.Models.ViewModel.ExperienceViewModel>
+﻿@using PrimeHtt.Models
+@model List<PrimeHtt.Models.ViewModel.ExperienceViewModel>
 
 @{
     ViewBag.Title = "Experience";
@@ -10,44 +11,77 @@
         <div class="page-header">
             <h1>
                 Experiences
+            </h1>
+        </div>
+        <div style="margin: 5px;">
+            <form id="ExperienceTitleForm" name="ExperienceTitleForm" method="post">
+                <div class="row">
+                    <div class="col-md-12 col-lg-6 col-lg-offset-3">
+                        <div class="form-group">
+                            @{
+                                var experienceTitle = "";
+                                using (var db = new PrimeTravelEntities())
+                                {
+                                    experienceTitle = db.PrimeConfiguration.Where(e => e.ConfigurationName == "ExperienceTitle").Select(e => e.ConfigurationValue).FirstOrDefault();
+                                    experienceTitle = System.Security.SecurityElement.Escape(experienceTitle);
+                                }
+                                
+                            }
+                            <div id="divExperienceTitle" class="alert alert-danger alert-dismissible" hidden role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <strong>Error! </strong><label id="lblExperienceTitle" for="ExperienceTitle"></label>
+                            </div>
+                            <label for="ExperienceTitle">Experience Title</label>
+                            <input id="ExperienceTitleInput" hidden value="@experienceTitle"/>
+                            <textarea id="ExperienceTitle" name="ExperienceTitle"></textarea>
+                        </div>
+                        <button id="btnSave" class="btn btn-primary pull-right">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button id="batchDelete" class="btn btn-primary pull-right" style="margin-left: 5px;"><span class="glyphicon glyphicon-trash"></span> Batch Delete</button>
                 <a href="@Url.Action("AddLocation", "Admin")" class="btn btn-primary pull-right">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add New Location
                 </a>
-            </h1>
+            </div>
         </div>
+        
         <div class="table-responsive">
             <table id="LocationTable" class="table table-bordered table-hover table-striped">
                 <thead>
-                <tr>
-                    <th data-column-id="LocationId" data-identifier="true" data-visible="false">Id</th>
-                    <th data-column-id="LocationName" data-formatter="ViewGallery">Location Name</th>
-                    <th data-column-id="Latitude">Latitude</th>
-                    <th data-column-id="Longitude">Longitude</th>
-                    <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
-                </tr>
+                    <tr>
+                        <th data-column-id="LocationId" data-identifier="true" data-visible="false">Id</th>
+                        <th data-column-id="LocationName" data-formatter="ViewGallery">Location Name</th>
+                        <th data-column-id="Latitude">Latitude</th>
+                        <th data-column-id="Longitude">Longitude</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @if (Model != null && Model.Count > 0)
-                {
-                    foreach (var item in Model)
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.LocationId</td>
+                                <td>@item.LocationName</td>
+                                <td>@item.Latitude</td>
+                                <td>@item.Longitude</td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@item.LocationId</td>
-                            <td>@item.LocationName</td>
-                            <td>@item.Latitude</td>
-                            <td>@item.Longitude</td>
+                            <td colspan="5">
+                                No Location yet.
+                            </td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="5">
-                            No Location yet.
-                        </td>
-                    </tr>
-                }
                 </tbody>
             </table>
         </div>
@@ -61,35 +95,97 @@
 </div>
 
 <script>
+
+    CKEDITOR.replace('ExperienceTitle',
+        {
+            startupFocus: false
+        });
+
+    var experienceTitle = $('#ExperienceTitleInput').val();
+    CKEDITOR.on('instanceReady', function (evt) {
+        if (evt.editor.name === "ExperienceTitle") {
+            CKEDITOR.instances['ExperienceTitle'].insertHtml(unescapeHtml(experienceTitle));
+        }
+    });
+
+    $('#btnSave').click(function(e) {
+        $.ajax({
+            type: "GET",
+            data: { title: CKEDITOR.instances['ExperienceTitle'].getData()},
+            url: '/Admin/UpdateExperienceTitle',
+            success: function (response) {
+                if (response.result === "success") {
+                    window.location.reload();
+                } else {
+                    swal(response.message, "", "error");
+                }
+            },
+            error: function (error) {
+                alert(error.message);
+            }
+        });
+    });
+
+    $('#batchDelete').click(function (e) {
+        var row = $('#LocationTable').bootgrid("getSelectedRows");
+        if (row.length === 0) {
+            alert("Please select location to delete.");
+            return false;
+        } else {
+            if (confirm("Are you want to delete the location?")) {
+                $.ajax({
+                    type: "GET",
+                    data: {id : row},
+                    dataType: 'json',
+                    traditional: true,
+                    url: '/Admin/BatchDeleteLocation',
+                    success: function (response) {
+                        if (response.result === "success") {
+                            window.location.reload();
+                        } else {
+                            swal(response.message, "", "error");
+                        }
+                    },
+                    error: function (error) {
+                        alert(error.message);
+                    }
+                });
+            }
+        }
+        
+    });
+
     @if (Model.Count > 0)
     {
         <text>
-        $("#LocationTable").bootgrid({
-                ajax: false,
-                caseSensitive: false,
-                formatters: {
-                    "ActionColumnBar": function (column, row) {
-                        var el = $("div.action-column-bar").html();
-                        el = el.replace("%7BLocationId%7D", row.LocationId).replace("%7BLocationId%7D", row.LocationId).replace("%7BLocationId%7D", row.LocationId);
-                        return el;
-                    },
-                    "ViewGallery": function (column, row) {
-                        return ("<a href='@Url.Content("~/Admin/Gallery?id=6LocationId6")'>" + row[column.id] + "</a>").replace("6LocationId6", row.LocationId);
-                    },
-                }
-            }).on("loaded.rs.jquery.bootgrid", function () {
-                $(this).find('[data-toggle="tooltip"]').tooltip();
+    $("#LocationTable").bootgrid({
+        ajax: false,
+        caseSensitive: false,
+        selection: true,
+        multiSelect: true,
+        formatters: {
+            "ActionColumnBar": function (column, row) {
+                var el = $("div.action-column-bar").html();
+                el = el.replace("%7BLocationId%7D", row.LocationId).replace("%7BLocationId%7D", row.LocationId).replace("%7BLocationId%7D", row.LocationId);
+                return el;
+            },
+            "ViewGallery": function (column, row) {
+                return ("<a href='@Url.Content("~/Admin/Gallery?id=6LocationId6")'>" + row[column.id] + "</a>").replace("6LocationId6", row.LocationId);
+            },
+        }
+    }).on("loaded.rs.jquery.bootgrid", function () {
+        $(this).find('[data-toggle="tooltip"]').tooltip();
 
-                $(this).find("a.delete-location-button").on("click", function (e) {
-                    if (confirm("Gallery will remove too, do you want to delete the location?")) {
-                        return true;
-                    }
+        $(this).find("a.delete-location-button").on("click", function (e) {
+            if (confirm("Gallery will remove too, do you want to delete the location?")) {
+                return true;
+            }
 
-                    e.preventDefault();
+            e.preventDefault();
 
-                    return false;
-                });
-            });
+            return false;
+        });
+    });
         </text>
     }
 </script>

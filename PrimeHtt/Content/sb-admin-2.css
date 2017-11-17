@@ -432,3 +432,10 @@ table.dataTable thead .sorting:after {
     border-left-width: 0;
   }
 }
+
+@media screen and (max-width: 767px) {
+    .navbar-top-links .dropdown-user {
+        right: 0;
+        left: 0;
+    }
+}

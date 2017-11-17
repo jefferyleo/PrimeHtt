@@ -18,6 +18,7 @@ namespace PrimeHtt.Models
         public Service()
         {
             this.ServiceInfo = new HashSet<ServiceInfo>();
+            this.ServiceViewMore = new HashSet<ServiceViewMore>();
         }
     
         public long ServiceId { get; set; }
@@ -30,5 +31,7 @@ namespace PrimeHtt.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ServiceInfo> ServiceInfo { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ServiceViewMore> ServiceViewMore { get; set; }
     }
 }

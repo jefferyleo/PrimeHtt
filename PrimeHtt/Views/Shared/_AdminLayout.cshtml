@@ -4,28 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Prime HTT Admin</title>
-    @Styles.Render("~/Content/css")
+    @*@Styles.Render("~/Content/css")*@
+    @Scripts.Render("~/bundles/jquery")
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
-    <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
-    <link href="~/Content/morris.css" rel="stylesheet" />
-    <link href="~/Content/jquery.bootgrid.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
-    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
     <link href="~/Content/custom.css" rel="stylesheet" />
-
-    <script src="~/Scripts/jquery-2.2.4.js"></script>
+    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/jquery.bootgrid.css" rel="stylesheet" />
+    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Amaranth" rel="stylesheet">
+    @RenderSection("scripts", required: false)
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
-    <script src="~/Scripts/metisMenu.min.js"></script>
-    <script src="~/Scripts/sb-admin-2.js"></script>
-    <script src="~/Scripts/raphael.min.js"></script>
+    <script src="~/Scripts/custom.js"></script>
     <script src="~/Scripts/ckeditor.js"></script>
-    <script src="~/Scripts/jquery.bootgrid.js"></script>
-    @*<script src="~/Scripts/morris.min.js"></script>
-        <script src="~/Scripts/morris-data.js"></script>*@
+    <script src="~/Scripts/config.js"></script>
+    <script src="~/Scripts/styles.js"></script>
     <script src="~/Scripts/sweetalert.min.js"></script>
+    <script src="~/Scripts/jquery.bootgrid.js"></script>
 </head>
 <body>
 
@@ -33,7 +29,7 @@
         <!-- Navigation -->
         <nav id="topnav" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -46,7 +42,7 @@
                 else
                 {
                     var formsAuthentication = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] != null ? FormsAuthentication.Decrypt(HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName].Value) : null;
-                    @Html.ActionLink("Prime Travel Admin Dashboard", "Index", "Admin", new { area = "" }, new { @class = "navbar-brand" })
+                    @Html.ActionLink("HTT Travel Admin Dashboard", "Index", "Admin", new { area = "" }, new { @class = "navbar-brand" })
                 }
 
             </div>
@@ -61,17 +57,18 @@
     }
     else
     {
+        var formsAuthentication = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName] != null ? FormsAuthentication.Decrypt(HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName].Value) : null;
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li>
+                    @*<li>
                         <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
+                    </li>*@
                     <li>
-                        <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        <a href="@Url.Content("~/Admin/ChangePassword?id="+ Convert.ToInt64(formsAuthentication.Name) +"")"><i class="fa fa-gear fa-fw"></i> Change Password</a>
                     </li>
                     <li class="divider"></li>
                     <li>
@@ -89,7 +86,7 @@
             {
 
                 <div class="navbar-default sidebar" role="navigation">
-                    <div class="sidebar-nav navbar-collapse">
+                    <div class="sidebar-nav navbar-collapse collapse">
                         <ul class="nav" id="side-menu">
                             @*<li class="sidebar-search">
                                 <div class="input-group custom-search-form">
@@ -102,22 +99,22 @@
                                 </div>
                             </li>*@
                             <li>
-                                <a href="@Url.Content("~/Admin/BannerList")"><i class="fa fa-picture-o fa-fw"></i>Banner</a>
+                                <a href="@Url.Content("~/Admin/BannerList")"><i class="fa fa-picture-o fa-fw"></i> Banner</a>
                             </li>
                             <li>
-                                <a href="@Url.Content("~/Admin/AboutUs")"><i class="fa fa-info fa-fw"></i>About Us</a>
+                                <a href="@Url.Content("~/Admin/AboutUs")"><i class="fa fa-info fa-fw"></i> About Us</a>
                             </li>
                             <li>
-                                <a href="@Url.Content("~/Admin/ServiceList")"><i class="fa fa-user fa-fw"></i>Service</a>
+                                <a href="@Url.Content("~/Admin/ServiceList")"><i class="fa fa-user fa-fw"></i> Service</a>
                             </li>
                             <li>
-                                <a href="@Url.Content("~/Admin/Experience")"><i class="fa fa-plane fa-fw"></i>Experiences</a>
+                                <a href="@Url.Content("~/Admin/Experience")"><i class="fa fa-plane fa-fw"></i> Experiences</a>
                             </li>
                             <li>
-                                <a href="@Url.Content("~/Admin/ContactUs")"><i class="fa fa-phone fa-fw"></i>Contact Us</a>
+                                <a href="@Url.Content("~/Admin/ContactUs")"><i class="fa fa-phone fa-fw"></i> Contact Us</a>
                             </li>
                             <li>
-                                <a href="@Url.Content("~/Admin/SocialNetworkList")"><i class="fa fa-globe fa-fw"></i>Social Network</a>
+                                <a href="@Url.Content("~/Admin/SocialNetworkList")"><i class="fa fa-globe fa-fw"></i> Social Network</a>
                             </li>
                         </ul>
                     </div>
@@ -133,8 +130,13 @@
         }
         else
         {
-            <div id="page-wrapper">
+            <div id="page-wrapper" style="min-height: 1000px; overflow-x: hidden;">
                 @RenderBody()
+
+                <hr />
+                <footer>
+                    <p>Copyright &copy; @DateTime.Now.Year. All Rights Reserved by HTT Travel (M) Sdn Bhd</p>
+                </footer>
             </div>
         }
 
@@ -142,9 +144,7 @@
         <!-- /#page-wrapper -->
 
     </div>
-<footer>
-    <p>&copy; @DateTime.Now.Year - Prime Travel</p>
-</footer>
+
     <!-- /#wrapper -->
 </body>
 </html>

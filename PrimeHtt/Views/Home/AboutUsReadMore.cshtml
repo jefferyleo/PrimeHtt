@@ -5,25 +5,23 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 style="text-align: center;">
+<h1 style="text-align: center; margin-top: 100px;">
     @Html.Raw(Model.AboutUsTitle)
 </h1>
 
 <div class="container" style="text-align: center;">
     <div class="row">
-        <div class="col-md-12" style="padding: 0px 100px; margin: 20px 0px;">
+        <div class="col-md-12 aboutContent">
             @Html.Raw(Model.AboutUsTopDescription)
         </div>
     </div>
     <div class="row">
         <div class="col-md-12" style="text-align: center">
-            <a href="@Model.AboutUsImage" target="_blank">
-                <img src="@Model.AboutUsImage"/>
-            </a>
+            <img src="@Model.AboutUsImage" style="width: 90%;"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12" style="padding: 0px 100px;margin: 30px 0">
+        <div class="col-md-12 aboutContent" style="">
             @Html.Raw(Model.AboutUsBottomDescription)
         </div>
     </div>

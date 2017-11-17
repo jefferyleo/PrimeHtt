@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace PrimeHtt.Models.ViewModel
 {
     public class ContactUsViewModel
     {
+        [AllowHtml]
+        [Required(ErrorMessage = "Please enter Contact Us Title.")]
+        public string ContactTitle { get; set; }
         public long ContactId { get; set; }
 
         [Required(ErrorMessage = "Please enter Contact Us Name.")]
         public string ContactName { get; set; }
 
+        [AllowHtml]
         [Required(ErrorMessage = "Please enter Contact Address.")]
         public string ContactAddress { get; set; }
         public double ContactLatitude { get; set; }

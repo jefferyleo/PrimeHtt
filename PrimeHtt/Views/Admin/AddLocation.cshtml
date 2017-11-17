@@ -4,12 +4,16 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="row">
+    <h1 class="page-header">Add New Location</h1>
+</div>
+
 <form id="AddLocation" name="AddLocation" method="post">
     <div class="row">
-        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+        @*<div class="col-md-12 col-lg-6 col-lg-offset-3">
             <h1 class="page-header">Add Location</h1>
-        </div>
-        <div class="col-md-6 col-lg-3 col-lg-offset-3">
+        </div>*@
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
             <div class="form-group">
                 <label for="LocationName">Location Name</label>
                 <input type="text" id="LocationName" name="LocationName" class="form-control" placeholder="Enter Location Name" value="@Model.LocationName" />
@@ -17,20 +21,20 @@
             </div>
             <div class="form-group">
                 <label for="Latitude">Location Latitude</label>
-                <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Enter Location Latitude" value="@Model.Latitude" />
+                <input type="text" id="Latitude" name="Latitude" class="form-control" placeholder="Enter Location Latitude" value="" />
                 @Html.ValidationMessageFor(e => e.Latitude)
             </div>
             <div class="form-group">
                 <label for="Longitude">Location Longitude</label>
-                <input type="text" id="Longitude" name="Longitude" class="form-control" placeholder="Enter Location Longitude" value="@Model.Longitude" />
+                <input type="text" id="Longitude" name="Longitude" class="form-control" placeholder="Enter Location Longitude" value="" />
                 @Html.ValidationMessageFor(e => e.Longitude)
             </div>
-            <p style="color:grey"><small>*Latitude and Longitude can leave empty.</small></p>
+            <p style="color:grey"><small>*Latitude and Longitude can be 0 if you don't know.</small></p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 col-lg-9">
-            <button type="submit" class="btn btn-primary pull-right">Add</button>
+            <button type="submit" class="btn btn-primary pull-right">Add New Location</button>
         </div>
     </div>
 </form>

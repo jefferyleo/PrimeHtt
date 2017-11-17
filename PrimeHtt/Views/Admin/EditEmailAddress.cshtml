@@ -4,13 +4,17 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="row">
+    <h1 class="page-header">Edit Email Address</h1>
+</div>
+
 <form id="EditEmailAddress" name="EditEmailAddress" method="post">
     <input type="hidden" id="ContactEmailId" name="ContactEmailId" value="@Model.ContactEmailId" />
     <div class="row">
-        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+        @*<div class="col-md-12 col-lg-6 col-lg-offset-3">
             <h1 class="page-header">Edit Email Address</h1>
-        </div>
-        <div class="col-md-6 col-lg-3 col-lg-offset-3">
+        </div>*@
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
             <div class="form-group">
                 <label for="ContactEmailAddress">Email Address</label>
                 <input type="text" id="ContactEmailAddress" name="ContactEmailAddress" class="form-control" placeholder="Enter Email Address" value="@Model.ContactEmailAddress" />
@@ -20,7 +24,7 @@
     </div>
     <div class="row">
         <div class="col-md-12 col-lg-9">
-            <button type="submit" class="btn btn-primary pull-right">Update</button>
+            <button type="submit" class="btn btn-primary pull-right">Edit Email Address</button>
         </div>
     </div>
 </form>

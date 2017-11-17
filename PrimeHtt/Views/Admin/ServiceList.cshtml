@@ -6,21 +6,55 @@
 }
 
 <div class="row">
-    <h1 class="page-header">Service List</h1>
+    <h1 class="page-header">
+        Service List
+        <a href="@Url.Action("AddService", "Admin")" class="btn btn-primary pull-right">
+            <span class="glyphicon glyphicon-plus"></span>
+            Add New Service
+        </a>
+    </h1>
 </div>
 
 <form id="ChangeServiceTitleForm" style="color:#001a33;" name="ChangeServiceTitleForm" method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12 col-lg-6 col-lg-offset-3">
-            <div class="form-group">
+            @*<div class="form-group">
                 <label for="ServiceTitle" id="lblServiceTitle">Service Title</label>
                 <input type="text" id="ServiceTitle" name="ServiceTitle" value="@Model[0].ServiceTitle.ConfigurationValue" class="form-control" placeholder="Enter Service Title" oninput="setCustomValidity('')" required />
+            </div>*@
+            <div class="form-group">
+                <label for="ServiceTitle" id="lblServiceTitle">Service Title</label>
+                @if (Model[0].ServiceTitle != null)
+                {
+                    <input id="Title" name="Title" value="@Model[0].ServiceTitle.ConfigurationValue" hidden />
+                }
+                else
+                {
+                    <input id="Title" name="Title" value="" hidden />
+                }
+                <textarea id="ServiceTitle" name="ServiceTitle"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+            <div class="form-group">
+                <label for="ServiceSubTitle" id="lblServiceSubTitle">Service SubTitle</label>
+                @if (Model[0].ServiceSubTitle != null)
+                {
+                    <input id="SubTitle" name="SubTitle" value="@Model[0].ServiceSubTitle.ConfigurationValue" hidden />
+                }
+                else
+                {
+                    <input id="SubTitle" name="SubTitle" value="" hidden />
+                }
+                <textarea id="ServiceSubTitle" name="ServiceSubTitle"></textarea>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 col-lg-9">
-            <button type="submit" id="changeServiceTitle" class="btn btn-primary pull-right">Change Service Title</button>
+            <button type="submit" id="changeServiceTitle" class="btn btn-primary pull-right">Change Service Title and SubTitle</button>
         </div>
     </div>
 </form>
@@ -38,7 +72,7 @@
                         <th data-column-id="ServiceId" data-visible="false" data-visible-in-selection="false">Service ID</th>
                         <th data-column-id="SImage" data-formatter="pix">Service Image</th>
                         <th data-column-id="ServiceType" data-width="300px">ServiceType</th>
-                        <th data-column-id="DateAdded">Date Added</th>
+                        @*<th data-column-id="DateAdded">Date Added</th>*@
                         <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
                     </tr>
                 </thead>
@@ -52,7 +86,7 @@
                             <td>@item.ServiceId</td>
                             <td>@item.SIImage.SImage</td>
                             <td>@item.ServiceType</td>
-                            <td>@item.DateAdded</td>
+                            @*<td>@item.DateAdded</td>*@
                         </tr>
                     }
                 </tbody>
@@ -71,6 +105,43 @@
 </div>
 
 <script type="text/javascript">
+    //var main = $('#Title').val();
+    //var sub = $('#SubTitle').val();
+    //CKEDITOR.replace('ServiceTitle');
+    //CKEDITOR.replace('ServiceSubTitle');
+    //CKEDITOR.on('instanceReady', function (evt) {
+    //    CKEDITOR.instances['ServiceTitle'].insertHtml(unescapeHtml(main));
+    //    CKEDITOR.instances['ServiceSubTitle'].insertHtml(unescapeHtml(sub));
+    //});
+
+    CKEDITOR.replace('ServiceTitle',
+        {
+            startupFocus: false
+        });
+    CKEDITOR.replace('ServiceSubTitle',
+        {
+            startupFocus: false
+        });
+
+    @if (Model != null)
+    {
+        <text>
+            var main = $('#Title').val();
+            var sub = $('#SubTitle').val();
+
+            CKEDITOR.on('instanceReady', function (evt) {
+                if (evt.editor.name === "ServiceTitle") {
+                    CKEDITOR.instances['ServiceTitle'].insertHtml(unescapeHtml(main));
+                }
+                else if (evt.editor.name === "ServiceSubTitle") {
+                    CKEDITOR.instances['ServiceSubTitle'].insertHtml(unescapeHtml(sub));
+                }
+                CKEDITOR.instances['ServiceTitle'].focus();
+                $(window).scrollTop(0);
+            });
+        </text>
+    }
+
     $(document).ready(function () {
         $("#ServiceTable").bootgrid({
             formatters: {
@@ -81,7 +152,7 @@
                     return el;
                 },
                 "pix": function (column, row) {
-                    return "<img src='" + row.SImage + "' style='width:150px; height:250px;' />";
+                    return "<img src='" + row.SImage + "' style='width:150px; height:123px;' />";
                 }
             }
         });
@@ -89,8 +160,10 @@
         $('#changeServiceTitle').click(function (e) {
             e.preventDefault();
             $('.loading').css('display', 'block');
-            var title = $('#ServiceTitle').val();
-
+            //var title = $('#ServiceTitle').val();
+            var title = CKEDITOR.instances['ServiceTitle'].getData();
+            var subTitle = CKEDITOR.instances['ServiceSubTitle'].getData();
+            //console.log(title);
             if (title == "") {
                 $('#lblServiceTitle').html('<span class="asterisk">*Please Enter Service Title</span>');
             } else {
@@ -98,11 +171,19 @@
                 $('#lblServiceTitle').html('Service Title');
             }
 
+            if (subTitle == "") {
+                $('#lblServiceSubTitle').html('<span class="asterisk">*Please Enter Service Sub Title</span>');
+            } else {
+                $("#lblServiceSubTitle .asterisk").remove();
+                $('#lblServiceSubTitle').html('Service Sub Title');
+            }
+
             if ($('.asterisk').val() == undefined) {
                 $.ajax({
                     url: "/Admin/ChangeServiceTitle",
                     data: {
-                        "ServiceTitle" : title
+                        "ServiceTitle": title,
+                        "ServiceSubTitle": subTitle,
                     },
                     type: "POST",
                     success: function (data) {

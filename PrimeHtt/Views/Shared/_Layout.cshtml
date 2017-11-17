@@ -6,28 +6,29 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Prime Travel</title>
-    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link href="~/Content/sb-admin-2.css" rel="stylesheet" />
-    <link href="~/Content/metisMenu.min.css" rel="stylesheet" />
-    <link href="~/Content/morris.css" rel="stylesheet" />
-    <link href="~/Content/jquery.bootgrid.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" />
-    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
     <link href="~/Content/custom.css" rel="stylesheet" />
-
-    <script src="~/Scripts/jquery-2.2.4.js"></script>
+    <link href="~/Content/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/jquery.bootgrid.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Amaranth" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.25/jquery.fancybox.min.css" />
+    @RenderSection("scripts", required: false)
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
-    <script src="~/Scripts/metisMenu.min.js"></script>
-    <script src="~/Scripts/sb-admin-2.js"></script>
-    <script src="~/Scripts/raphael.min.js"></script>
+    <script src="~/Scripts/custom.js"></script>
     <script src="~/Scripts/ckeditor.js"></script>
+    <script src="~/Scripts/config.js"></script>
+    <script src="~/Scripts/styles.js"></script>
+    <script src="~/Scripts/sweetalert.min.js"></script>
     <script src="~/Scripts/jquery.bootgrid.js"></script>
     @*<script src="~/Scripts/morris.min.js"></script>
         <script src="~/Scripts/morris-data.js"></script>*@
     <script src="~/Scripts/sweetalert.min.js"></script>
+    <script src="~/Scripts/illbeback.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.25/jquery.fancybox.min.js"></script>
+
     <script type="text/javascript">
         var appInsights=window.appInsights||function(config){
             function r(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s=u.createElement(o),i,f;for(s.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js",u.getElementsByTagName(o)[0].parentNode.appendChild(s),t.cookie=u.cookie,t.queue=[],i=["Event","Exception","Metric","PageView","Trace"];i.length;)r("track"+i.pop());return r("setAuthenticatedUserContext"),r("clearAuthenticatedUserContext"),config.disableExceptionTracking||(i="onerror",r("_"+i),f=e[i],e[i]=function(config,r,u,e,o){var s=f&&f(config,r,u,e,o);return s!==!0&&t["_"+i](config,r,u,e,o),s}),t
@@ -39,71 +40,85 @@
         appInsights.trackPageView();
     </script>
 </head>
-<body style="font-family: 'Amaranth';">
-<div class="navbar navbar-fixed-top" style="background-color: #f7f7f7; border-color: #e6e6e6;">
-    <div class="container" style="margin: 10px;">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" style="border: 1px solid #6699ff;">
-                <span class="icon-bar" style="background-color: #6699ff;"></span>
-                <span class="icon-bar" style="background-color: #6699ff;"></span>
-                <span class="icon-bar" style="background-color: #6699ff;"></span>
-            </button>
-            <img src="~/img/58779_logo_0_56027.png" style="width: 60px; margin-left: 20px;"/>
+<body>
+    <nav class="navbar navbar-fixed-top" style="background-color: #f7f7f7; border-color: #e6e6e6;">
+        <div class="container" style="margin: 10px;">
+            <div class="navbar-header">
+                <button id="menuBar" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#primeNavbar" aria-expanded="false" aria-controls="primeNavbar" style="border: 1px solid #6699ff;">
+                    <span class="icon-bar" style="background-color: #6699ff;"></span>
+                    <span class="icon-bar" style="background-color: #6699ff;"></span>
+                    <span class="icon-bar" style="background-color: #6699ff;"></span>
+                </button>
+                <a href="~/Home">
+                    @*<img src="~/img/58779_logo_0_56027.png" style="width: 60px; margin-left: 20px;" />*@
+                    @*<img src="~/img/logo.png" style="width: 250px; margin-top: 7px;"/>*@
+                    <img src="~/img/logosmaller2.png" class="logoImage"/>
+                </a>
+            </div>
+            <div id="primeNavbar" class="collapse navbar-collapse" style="font-size: 15px; width: 95vw">
+                <ul class="navbar-nav ml-auto nav navbar-right" style="margin-top: 3px;">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="~/Home/#home">
+                            HOME
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Home/#about">ABOUT THE FOUNDER</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Home/#services">SERVICES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Home/#experiences">EXPERIENCES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Home/#contact">CONTACT US</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div id="navbar" class="navbar-collapse collapse" style="font-size: 15px;">
-            <ul class="navbar-nav ml-auto nav navbar-right">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#home">
-                        HOME
-                        @*<span class="sr-only">(current)</span>*@
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#about">ABOUT THE FOUNDER</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#services">SERVICES</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#experiences">EXPERIENCES</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">CONTACT US</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="body-content" style="margin-top: 70px;">
-    @RenderBody()
-    <hr />
-    <footer class="wrapper style1 align-center">
-        <div class="inner">
-            <ul class="icons">
-                @{
-                    using (var db = new PrimeTravelEntities())
-                    {
-                        var social = (from i in db.SocialNetwork
-                            where i.IsActive == true && i.IsDeleted == false
-                            select new SocialNetworkModel()
-                            {
-                                SocialNetworkId = i.SocialNetworkId,
-                                SocialNetworkLink = i.SocialNetworkLink,
-                                SocialNetworkName = i.SocialNetworkName,
-                                SocialNetworkType = i.SocialNetworkType,
-                            }).ToList();
-
-                        for (int item = 0; item < social.Count(); item++)
+    </nav>
+    <div class="body-content" style="margin-top: 70px;">
+        @RenderBody()
+        <hr />
+        <footer class="wrapper style1 align-center">
+            <div class="inner">
+                <ul class="icons">
+                    @{
+                        using (var db = new PrimeTravelEntities())
                         {
-                            var setClass = "icon2 style2 " + social[item].SocialNetworkType;
-                            <li><a href="@social[item].SocialNetworkLink"  target="_blank" class="@setClass" style="color: #000;"><span class="label">@social[item].SocialNetworkName</span></a></li>
+                            var social = (from i in db.SocialNetwork
+                                          where i.IsActive == true && i.IsDeleted == false
+                                          select new SocialNetworkModel()
+                                          {
+                                              SocialNetworkId = i.SocialNetworkId,
+                                              SocialNetworkLink = i.SocialNetworkLink,
+                                              SocialNetworkName = i.SocialNetworkName,
+                                              SocialNetworkType = i.SocialNetworkType,
+                                          }).ToList();
+
+                            for (int item = 0; item < social.Count(); item++)
+                            {
+                                var setClass = "icon2 style2 " + social[item].SocialNetworkType;
+                                <li><a href="@social[item].SocialNetworkLink" target="_blank" class="@setClass" style="color: #000;"><span class="label">@social[item].SocialNetworkName</span></a></li>
+                            }
                         }
                     }
-                }
-            </ul>
-            <p>Copyright &copy; @DateTime.Now.Year. All Rights Reserved by H.T.T.Travel (M) Sdn.Bhd</p>
-        </div>
-    </footer>
-</div>
+                </ul>
+                <p>Copyright &copy; @DateTime.Now.Year. All Rights Reserved by HTT Travel (M) Sdn Bhd</p>
+            </div>
+        </footer>
+        <a href="" id="scroll-to-top" style="background-position: center center; position: fixed; z-index: 1000; bottom: 30px; right: 30px; width: 64px; height: 64px; background-size: 50%; background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAA8CAMAAACuCk+GAAAAVFBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////8wXzyWAAAAHHRSTlMAv3FsR04ETZV7qzmMQwNjpYSBbbaedD8lCCghrxzLjAAAATlJREFUeAG10ctOwzAUhOHpBePYSdM2vbTw/u+JkIyUsmCU/5BZ+kjfv7AWLNVtn3M/1YNW2b1s2o51DX+3mW38f3+7edluZZ8XvM8L3ucF7/MC93nB+7zgfV7wPi9wnxe8zwve5wXv84L3eYH7vsB9X+A+L3DfF7jvC9z3Be7zAvd9gfu2wH1T4L4pcH//7gpBX7KFoL+ggPwFBeSDAvDlC9AHBeCDAvClN18APigAHxS8L1gAPijsqO8LoyQN3PeFKj0L933hmDSEfFu4q4v5rnDTNeibQlYJ+qZw1DXom0LWOeibQqd90DeFQc8L932hpHaK+n8yHfdd4abvpTP2TaE7qBWgbwo/vpROxDeF5rfC7B8ug/D2M397eD2V9t5/KrBHbkwZ9GupTn0+jQ8F9zGecj/VpLYvzkEQTeC4sD8AAAAASUVORK5CYII=&quot;); background-repeat: no-repeat; transition: background-color 300ms linear; display: block; background-color: rgba(30, 30, 30, 0.4);"></a>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#scroll-to-top").illBeBack();
+
+            $("#primeNavbar ul li.nav-item").click(function () {
+                $('#menuBar').removeClass("navbar-toggle").addClass("navbar-toggle collapsed");
+                $('#primeNavbar').removeClass("navbar-collapse in").addClass("navbar-collapse collapse");
+            });
+        });
+    </script>
 </body>
 </html>

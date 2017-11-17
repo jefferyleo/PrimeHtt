@@ -104,6 +104,9 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.0.0\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -205,6 +208,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Authorization\CipherEncrypt.cs" />
     <Compile Include="Helper\Authorization\GetAuthorization.cs" />
     <Compile Include="Helper\Services\MetadataServices.cs" />
     <Compile Include="Models\AboutUs.cs">
@@ -253,6 +257,9 @@
     <Compile Include="Models\ServiceInfo.cs">
       <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ServiceViewMore.cs">
+      <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SocialNetwork.cs">
       <DependentUpon>PrimeTravelEntities.tt</DependentUpon>
     </Compile>
@@ -263,6 +270,7 @@
     <Compile Include="Models\ViewModel\AddEmailAddress.cs" />
     <Compile Include="Models\ViewModel\AddReservationContact.cs" />
     <Compile Include="Models\ViewModel\BannerModel.cs" />
+    <Compile Include="Models\ViewModel\ChangePasswordViewModel.cs" />
     <Compile Include="Models\ViewModel\ContactUsViewModel.cs" />
     <Compile Include="Models\ViewModel\ExperienceViewModel.cs" />
     <Compile Include="Models\ViewModel\GalleryViewModel.cs" />
@@ -272,6 +280,7 @@
     <Compile Include="Models\ViewModel\PrimeConfigurationModel.cs" />
     <Compile Include="Models\ViewModel\ServiceInfoModel.cs" />
     <Compile Include="Models\ViewModel\ServiceModel.cs" />
+    <Compile Include="Models\ViewModel\ServiceViewMoreModel.cs" />
     <Compile Include="Models\ViewModel\SocialNetworkModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -280,9 +289,11 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\custom.css" />
+    <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\jquery.bootgrid.css" />
     <Content Include="Content\jquery.bootgrid.min.css" />
+    <Content Include="Content\jquery.fancybox-1.3.4.css" />
     <Content Include="Content\lightgallery.css" />
     <Content Include="Content\lightslider.css" />
     <Content Include="Content\lightslider.min.css" />
@@ -340,10 +351,17 @@
     <Content Include="Content\UserLogin\prism.css" />
     <Content Include="Content\UserLogin\style.min.css" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="GoogleMaps.LocationServices.readme.txt" />
+    <Content Include="img\58779_logo_0_56027.png" />
+    <Content Include="img\loginlogo.png" />
+    <Content Include="img\logo.png" />
+    <Content Include="img\logosmaller.png" />
+    <Content Include="img\logosmaller2.png" />
+    <Content Include="img\primehtt.jpg" />
     <Content Include="Models\PrimeTravelEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>PrimeTravelEntities.edmx</DependentUpon>
@@ -361,8 +379,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="font\material-design-icons\Material-Design-Icons.woff" />
-    <Content Include="font\material-design-icons\Material-Design-Icons.ttf" />
+    <Content Include="Content\font\material-design-icons\Material-Design-Icons.woff" />
+    <Content Include="Content\font\material-design-icons\Material-Design-Icons.ttf" />
     <Content Include="Scripts\ckeditor.js" />
     <Content Include="Scripts\config.js" />
     <Content Include="Scripts\contents.css" />
@@ -374,8 +392,15 @@
     <Content Include="Models\PrimeTravelEntities.edmx.diagram">
       <DependentUpon>PrimeTravelEntities.edmx</DependentUpon>
     </Content>
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <None Include="Properties\PublishProfiles\primehtt - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\primehtt - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
+    <Content Include="Scripts\illbeback.js" />
     <Content Include="Scripts\jquery-2.2.4.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
     <Content Include="Scripts\jquery-2.2.4.min.map" />
@@ -386,7 +411,9 @@
     <Content Include="Scripts\jquery.bootgrid.fa.min.js" />
     <Content Include="Scripts\jquery.bootgrid.js" />
     <Content Include="Scripts\jquery.bootgrid.min.js" />
+    <Content Include="Scripts\jquery.fancybox-1.3.4.pack.js" />
     <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\jquery.mousewheel-3.0.4.pack.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -462,6 +489,7 @@
     <Content Include="Scripts\lang\zh-cn.js" />
     <Content Include="Scripts\lang\zh.js" />
     <Content Include="Scripts\lang\_translationstatus.txt" />
+    <Content Include="Scripts\lightGallery.js" />
     <Content Include="Scripts\lightslider.js" />
     <Content Include="Scripts\lightslider.min.js" />
     <Content Include="Scripts\metisMenu.js" />
@@ -785,6 +813,9 @@
     <Content Include="Views\Admin\ServiceList.cshtml" />
     <Content Include="Views\Admin\SocialNetworkList.cshtml" />
     <Content Include="Views\Home\AboutUsReadMore.cshtml" />
+    <Content Include="Views\Admin\ChangePassword.cshtml" />
+    <Content Include="Views\Home\ServicesInfo.cshtml" />
+    <Content Include="Views\Admin\UpdateAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

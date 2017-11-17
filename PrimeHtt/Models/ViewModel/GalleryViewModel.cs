@@ -39,10 +39,12 @@ namespace PrimeHtt.Models.ViewModel
 
         public string ContentType => LocationContentType ? "Video" : "Image";
         public string LocationContent { get; set; }
+        public string[] LocationContentArray { get; set; }
         public int LocationIndex { get; set; }
         public long LocationId { get; set; }
         public string Location { get; set; }
         public HttpPostedFileBase ContentImage { get; set; }
+        public List<HttpPostedFileBase> ContentImageArray { get; set; }
         public List<SelectListItem> LocationName { get; set; }        
     }
 }

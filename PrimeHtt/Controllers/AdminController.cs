@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using GoogleMaps.LocationServices;
@@ -11,6 +10,9 @@ using PrimeHtt.Helper.Authorization;
 using PrimeHtt.Helper.Services;
 using PrimeHtt.Models.ViewModel;
 using PrimeHtt.Models;
+using RestSharp;
+using RestSharp.Authenticators;
+using HttpCookie = System.Web.HttpCookie;
 
 namespace PrimeHtt.Controllers
 {
@@ -20,7 +22,7 @@ namespace PrimeHtt.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("BannerList");
         }
 
         [AllowAnonymous]
@@ -65,7 +67,7 @@ namespace PrimeHtt.Controllers
                     var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
                     HttpContext.Response.Cookies.Add(authCookie);
 
-                    return RedirectToAction("Index", "Admin");
+                    return RedirectToAction("BannerList", "Admin");
 
                 }
                 else
@@ -73,6 +75,140 @@ namespace PrimeHtt.Controllers
                     ViewBag.LoginStatus = "Your Username or Password is wrong.";
                     return View(model);
                 }
+            }
+        }
+
+        [Authorize]
+        public ActionResult ChangePassword(long id)
+        {
+            using (var db = new PrimeTravelEntities())
+            {
+                var user = db.User.FirstOrDefault(e => e.UserId == id);
+                if (user == null)
+                {
+                    return RedirectToAction("Logout");
+                }
+                return View(new ChangePasswordViewModel()
+                {
+                    UserId = user.UserId,
+                    Username = user.Username,
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePasswordViewModel model)
+        {
+            var formsAuthentication = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName] != null ? FormsAuthentication.Decrypt(HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName].Value) : null;
+            using (var db = new PrimeTravelEntities())
+            {
+                if (model.NewPassword != model.ConfirmNewPassword)
+                {
+                    ModelState.AddModelError("ConfirmNewPassword", "Passwords do not match.");
+
+                    return View(model);
+                }
+
+                if (!(model.NewPassword == null && model.ConfirmNewPassword == null))
+                {
+                    if (model.NewPassword == null)
+                    {
+                        ModelState.AddModelError("NewPassword", "Please enter New Password.");
+
+                        return View(model);
+                    }
+
+                    if (model.ConfirmNewPassword == null)
+                    {
+                        ModelState.AddModelError("ConfirmNewPassword", "Please enter Confirm New Password.");
+
+                        return View(model);
+                    }
+                }
+
+                var user = db.User.Find(model.UserId);
+
+                if (user == null)
+                {
+                    return new HttpNotFoundResult("User not found.");
+                }
+
+                if (model.ConfirmNewPassword != null)
+                {
+                    if (user.Username != model.Username)
+                    {
+                        user.NewUsername = model.Username;
+                    }
+                    var passwordHash = PasswordHash.CreateHash(model.ConfirmNewPassword);
+                    user.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                    user.UpdatedBy = GetAuthorization.GetUsername(formsAuthentication.Name);
+                    user.NewPassword = passwordHash;
+                    user.IsPasswordChanging = true;
+                    db.SaveChanges();
+
+                    SendChangePasswordEmail(user.UserId);
+                }
+                
+
+                return RedirectToAction("Logout");
+            }
+        }
+
+        public static IRestResponse SendChangePasswordEmail(long id)
+        {
+            using (var db = new PrimeTravelEntities())
+            {
+                var user = db.User.Find(id);
+                var encryptedUserId = CipherEncrypt.Encrypt(id.ToString(), "password");
+                var currentDomain = System.Web.HttpContext.Current.Request.Url.Authority;
+                var resetLink = "" + currentDomain + "/Admin/UpdateAccount?id=" + encryptedUserId + "";
+                Uri uri = new Uri("https://api.mailgun.net/v3");
+                RestClient client = new RestClient();
+                client.BaseUrl = uri;
+                client.Authenticator = new HttpBasicAuthenticator(
+                    "api", "key-496159f2c06a94d8da054f088048e3d5");
+                RestRequest request = new RestRequest();
+                request.AddParameter("domain",
+                    "prime-htt.com.my", ParameterType.UrlSegment);
+                request.Resource = "{domain}/messages";
+                request.AddParameter("from", "Prime Htt Website<postmaster@prime-htt.com.my>");
+                request.AddParameter("to", "royce@prime-htt.com.my");
+                request.AddParameter("subject", "Change Password - Prime Htt");
+                //request.AddParameter("text", "Click the link to update account details.\n Email: "+ user.Username +"");
+                request.AddParameter("html",
+                    "<html>Click the link below to update account details.\n Email: " + user.Username + "\n <a href='"+ resetLink + "'>Click Here</a></html>");
+                request.Method = Method.POST;
+                return client.Execute(request);
+            }
+            
+        }
+
+        public ActionResult UpdateAccount(string id)
+        {
+            using (var db = new PrimeTravelEntities())
+            {
+                id = id.Replace(" ", "+");
+                var decryptedId = CipherEncrypt.Decrypt(id, "password");
+                var userId = Convert.ToInt64(decryptedId);
+                var user = db.User.Find(userId);
+                if (user != null)
+                {
+                    if (user.NewUsername != "")
+                    {
+                        user.Username = user.NewUsername;
+                    }
+                    if (user.NewPassword != "")
+                    {
+                        user.Password = user.NewPassword;
+                    }
+                    user.IsPasswordChanging = false;
+                    user.NewUsername = "";
+                    user.NewPassword = "";
+                    user.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                    db.SaveChanges();
+                }
+                return View();
             }
         }
 
@@ -202,6 +338,7 @@ namespace PrimeHtt.Controllers
             {
                 var contactUs = db.Contact.Select(e => new ContactUsViewModel()
                 {
+                    ContactTitle = e.ContactTitle,
                     ContactId = e.ContactId,
                     ContactName = e.ContactName,
                     ContactAddress = e.ContactAddress,
@@ -220,13 +357,21 @@ namespace PrimeHtt.Controllers
                         ContactEmailAddress = f.ContactEmailAddress,
                     }).ToList(),
                 }).FirstOrDefault();
+                if (contactUs.ContactTitle != "")
+                {
+                    contactUs.ContactTitle = System.Security.SecurityElement.Escape(contactUs.ContactTitle);
+                }
+                if (contactUs.ContactAddress != "")
+                {
+                    contactUs.ContactAddress = System.Security.SecurityElement.Escape(contactUs.ContactAddress);
+                }
                 return View(contactUs);
             }
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult ContactUs(ContactUsViewModel model)
+        public JsonResult ContactUs(ContactUsViewModel model)
         {
             using (var db = new PrimeTravelEntities())
             {
@@ -237,8 +382,8 @@ namespace PrimeHtt.Controllers
                             HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName].Value)
                         : null;
                     var contactUs = db.Contact.FirstOrDefault();
-                    var locationService = new GoogleLocationService();
-                    var point = locationService.GetLatLongFromAddress(model.ContactAddress);
+                    //var locationService = new GoogleLocationService();
+                    //var point = locationService.GetLatLongFromAddress(model.ContactAddress);
                     var error = db.Contact.Select(e => new ContactUsViewModel()
                     {
                         ContactId = e.ContactId,
@@ -259,17 +404,18 @@ namespace PrimeHtt.Controllers
                             ContactEmailAddress = f.ContactEmailAddress,
                         }).ToList(),
                     }).FirstOrDefault();
-                    if (point == null)
-                    {
-                        ModelState.AddModelError("ContactAddress", "" + model.ContactAddress + " not found.");
-                        return View(error);
-                    }
+                    //if (point == null)
+                    //{
+                    //    ModelState.AddModelError("ContactAddress", "" + model.ContactAddress + " not found.");
+                    //    return Json(new { result = "failed", Errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+                    //}
                     if (contactUs != null) //there's an exist contact us data in db
                     {
+                        contactUs.ContactTitle = model.ContactTitle;
                         contactUs.ContactName = model.ContactName;
                         contactUs.ContactAddress = model.ContactAddress;
-                        contactUs.ContactLatitude = point.Latitude;
-                        contactUs.ContactLongitude = point.Longitude;
+                        contactUs.ContactLatitude = contactUs.ContactLatitude;
+                        contactUs.ContactLongitude = contactUs.ContactLongitude;
                         contactUs.CreatedBy = contactUs.CreatedBy;
                         contactUs.CreatedAt = contactUs.CreatedAt;
                         contactUs.UpdatedBy = formsAuthentication.Name ?? "";
@@ -278,8 +424,11 @@ namespace PrimeHtt.Controllers
                     }
                     else
                     {
+                        var locationService = new GoogleLocationService();
+                        var point = locationService.GetLatLongFromAddress(model.ContactAddress);
                         var newContact = new Contact()
                         {
+                            ContactTitle = model.ContactTitle,
                             ContactName = model.ContactName,
                             ContactAddress = model.ContactAddress,
                             ContactLatitude = point.Latitude,
@@ -312,7 +461,7 @@ namespace PrimeHtt.Controllers
                             ContactEmailAddress = f.ContactEmailAddress,
                         }).ToList(),
                     }).FirstOrDefault();
-                    return View(result);
+                    return Json(new { result = "success" }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -336,7 +485,7 @@ namespace PrimeHtt.Controllers
                             ContactEmailAddress = f.ContactEmailAddress,
                         }).ToList(),
                     }).FirstOrDefault();
-                    return View(contact);
+                    return Json(new { result = "success" }, JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -544,6 +693,56 @@ namespace PrimeHtt.Controllers
         }
 
         [Authorize]
+        [ValidateInput(false)]
+        public JsonResult UpdateExperienceTitle(string title)
+        {
+            using (var db = new PrimeTravelEntities())
+            {
+                var experienceTitle = db.PrimeConfiguration.FirstOrDefault(e => e.ConfigurationName == "ExperienceTitle");
+                if (experienceTitle != null)
+                {
+                    experienceTitle.ConfigurationValue = title;
+                    db.SaveChanges();
+                }
+                return Json(new{ result = "success" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [Authorize]
+        public JsonResult BatchDeleteLocation(string[] id) //experience id
+        {
+            using (var db = new PrimeTravelEntities())
+            {
+                if (id.Length == 0)
+                {
+                    return Json(new { result = "failed", message = "Please select location to delete." }, JsonRequestBehavior.AllowGet);
+                }
+                foreach (var item in id)
+                {
+                    var locationId = Convert.ToInt64(item);
+                    var location = db.Experience.Find(locationId);
+                    if (location == null)
+                    {
+                        continue;
+                    }
+                    var galleries = db.ExperienceDetail.Where(e => e.LocationId == location.LocationId).ToList();
+                    foreach (var gallery in galleries)
+                    {
+                        if (gallery.LocationContentType == false)
+                        {
+                            MetadataServices.DeleteFromCloud("gallery", gallery.LocationImageName);
+                        }
+                    }
+
+                    db.ExperienceDetail.RemoveRange(galleries);
+                    db.Experience.Remove(location);
+                }
+                db.SaveChanges();
+                return Json(new { result = "success" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [Authorize]
         public ActionResult AddLocation()
         {
             return View(new AddLocationViewModel());
@@ -561,7 +760,7 @@ namespace PrimeHtt.Controllers
                         .Value)
                     : null;
                 var locationService = new GoogleLocationService();
-                if (model.Latitude == 0 && model.Longitude == 0)
+                if ((model.Latitude == 0 || model.Latitude == null) && (model.Longitude == 0 || model.Longitude == null))
                 {
                     var point = new MapPoint();
                     try
@@ -570,7 +769,7 @@ namespace PrimeHtt.Controllers
                     }
                     catch (Exception e)
                     {
-                        ModelState.AddModelError("LocationName", "" + model.LocationName + " not found.");
+                        ModelState.AddModelError("LocationName", "Something wrong with google map, please try again in a moment.");
                         return View(model);
                     }
                     if (point == null)
@@ -681,7 +880,7 @@ namespace PrimeHtt.Controllers
                     location.LocationName = model.LocationName;
                     location.Latitude = model.Latitude;
                     location.Longitude = model.Longitude;
-                    location.CountryName = address.Country;
+                    location.CountryName = location.CountryName;
                     location.CreatedBy = location.CreatedBy;
                     location.CreatedAt = location.CreatedAt;
                     location.UpdatedBy = formsAuthentication.Name ?? "";
@@ -790,126 +989,252 @@ namespace PrimeHtt.Controllers
 
         }
 
+        //[Authorize]
+        //[HttpPost]
+        //public ActionResult AddGallery(AddGalleryViewModel model)
+        //{
+        //    using (var db = new PrimeTravelEntities())
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return View(new AddGalleryViewModel()
+        //            {
+
+        //                LocationName = (from e in db.Experience
+        //                                select new { e.LocationId, e.LocationName }).ToList().Select(e => new SelectListItem
+        //                                {
+        //                                    Text = e.LocationName,
+        //                                    Value = e.LocationId.ToString(),
+        //                                }).ToList(),
+        //                LocationId = model.LocationId,
+        //            });
+        //        }
+        //        var formsAuthentication = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName] != null
+        //            ? FormsAuthentication.Decrypt(
+        //                HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName].Value)
+        //            : null;
+        //        if (!model.LocationContentType) //image
+        //        {
+        //            string newFileName = "";
+        //            var galleryImage = MetadataServices.UploadToCloud("gallery", model.ContentImage, out newFileName);
+        //            var IsGalleryExist = db.ExperienceDetail.Any(e => e.LocationId == model.LocationId && !e.LocationContentType);
+        //            if (IsGalleryExist)
+        //            {
+        //                var index = db.ExperienceDetail.Where(e => e.LocationId == model.LocationId && !e.LocationContentType).OrderByDescending(e => e.LocationIndex).Select(e => e.LocationIndex).FirstOrDefault();
+        //                var index = (from e in db.ExperienceDetail
+        //                             where e.LocationId == model.LocationId
+        //                             select e.LocationIndex).LastOrDefault();
+        //                var gallery = new ExperienceDetail()
+        //                {
+        //                    LocationId = model.LocationId,
+        //                    LocationContentType = model.LocationContentType,
+        //                    LocationContent = galleryImage,
+        //                    LocationImageName = newFileName,
+        //                    LocationIndex = index + 1,
+        //                    CreatedBy = formsAuthentication.Name ?? "",
+        //                    CreatedAt = MetadataServices.GetCurrentDateTime(),
+        //                    UpdatedBy = formsAuthentication.Name ?? "",
+        //                    UpdatedAt = MetadataServices.GetCurrentDateTime(),
+        //                };
+        //                db.ExperienceDetail.Add(gallery);
+        //            }
+        //            else
+        //            {
+        //                var gallery = new ExperienceDetail()
+        //                {
+        //                    LocationId = model.LocationId,
+        //                    LocationContentType = model.LocationContentType,
+        //                    LocationContent = galleryImage,
+        //                    LocationImageName = newFileName,
+        //                    LocationIndex = 1,
+        //                    CreatedBy = formsAuthentication.Name ?? "",
+        //                    CreatedAt = MetadataServices.GetCurrentDateTime(),
+        //                    UpdatedBy = formsAuthentication.Name ?? "",
+        //                    UpdatedAt = MetadataServices.GetCurrentDateTime(),
+        //                };
+        //                db.ExperienceDetail.Add(gallery);
+        //            }
+        //            db.SaveChanges();
+        //            return RedirectToAction("Gallery", "Admin", new { id = model.LocationId });
+        //        }
+        //        else //video
+        //        {
+        //            if (model.ContentType == "")
+        //            {
+        //                ModelState.AddModelError("LocationContent", "Please Enter Video Link.");
+        //                return View(new AddGalleryViewModel()
+        //                {
+
+        //                    LocationName = (from e in db.Experience
+        //                                    select new { e.LocationId, e.LocationName }).ToList().Select(e => new SelectListItem
+        //                                    {
+        //                                        Text = e.LocationName,
+        //                                        Value = e.LocationId.ToString(),
+        //                                    }).ToList(),
+        //                    LocationId = model.LocationId,
+        //                });
+        //            }
+        //            var IsGalleryExist = db.ExperienceDetail.Any(e => e.LocationId == model.LocationId && e.LocationContentType);
+        //            if (IsGalleryExist)
+        //            {
+        //                var index = db.ExperienceDetail.Where(e => e.LocationId == model.LocationId && !e.LocationContentType).OrderByDescending(e => e.LocationIndex).Select(e => e.LocationIndex).FirstOrDefault();
+        //                var gallery = new ExperienceDetail()
+        //                {
+        //                    LocationId = model.LocationId,
+        //                    LocationContentType = model.LocationContentType,
+        //                    LocationContent = model.LocationContent,
+        //                    LocationIndex = index + 1,
+        //                    CreatedBy = formsAuthentication.Name ?? "",
+        //                    CreatedAt = MetadataServices.GetCurrentDateTime(),
+        //                    UpdatedBy = formsAuthentication.Name ?? "",
+        //                    UpdatedAt = MetadataServices.GetCurrentDateTime(),
+        //                };
+        //                db.ExperienceDetail.Add(gallery);
+        //            }
+        //            else
+        //            {
+        //                var gallery = new ExperienceDetail()
+        //                {
+        //                    LocationId = model.LocationId,
+        //                    LocationContentType = model.LocationContentType,
+        //                    LocationContent = model.LocationContent,
+        //                    LocationIndex = 1,
+        //                    CreatedBy = formsAuthentication.Name ?? "",
+        //                    CreatedAt = MetadataServices.GetCurrentDateTime(),
+        //                    UpdatedBy = formsAuthentication.Name ?? "",
+        //                    UpdatedAt = MetadataServices.GetCurrentDateTime(),
+        //                };
+        //                db.ExperienceDetail.Add(gallery);
+        //            }
+        //            db.SaveChanges();
+        //            return RedirectToAction("Gallery", "Admin", new { id = model.LocationId });
+        //        }
+        //    }
+        //}
+
         [Authorize]
         [HttpPost]
-        public ActionResult AddGallery(AddGalleryViewModel model)
+        public JsonResult AddGallery(AddGalleryViewModel model)
         {
             using (var db = new PrimeTravelEntities())
             {
-                if (!ModelState.IsValid)
-                {
-                    return View(new AddGalleryViewModel()
-                    {
-
-                        LocationName = (from e in db.Experience
-                                        select new { e.LocationId, e.LocationName }).ToList().Select(e => new SelectListItem
-                                        {
-                                            Text = e.LocationName,
-                                            Value = e.LocationId.ToString(),
-                                        }).ToList(),
-                        LocationId = model.LocationId,
-                    });
-                }
                 var formsAuthentication = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName] != null
                     ? FormsAuthentication.Decrypt(
                         HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName].Value)
                     : null;
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { result = "failed", message = "Please fill in all the mandatory field." }, JsonRequestBehavior.AllowGet);
+                }
+
                 if (!model.LocationContentType) //image
                 {
-                    string newFileName = "";
-                    var galleryImage = MetadataServices.UploadToCloud("gallery", model.ContentImage, out newFileName);
-                    var IsGalleryExist = db.ExperienceDetail.Any(e => e.LocationId == model.LocationId && !e.LocationContentType);
-                    if (IsGalleryExist)
+                    if (!model.ContentImageArray.Any())
                     {
-                        var index = db.ExperienceDetail.Where(e => e.LocationId == model.LocationId && !e.LocationContentType).OrderByDescending(e => e.LocationIndex).Select(e => e.LocationIndex).FirstOrDefault();
-                        //var index = (from e in db.ExperienceDetail
-                        //    where e.LocationId == model.LocationId
-                        //    select e.LocationIndex).LastOrDefault();
-                        var gallery = new ExperienceDetail()
-                        {
-                            LocationId = model.LocationId,
-                            LocationContentType = model.LocationContentType,
-                            LocationContent = galleryImage,
-                            LocationImageName = newFileName,
-                            LocationIndex = index + 1,
-                            CreatedBy = formsAuthentication.Name ?? "",
-                            CreatedAt = MetadataServices.GetCurrentDateTime(),
-                            UpdatedBy = formsAuthentication.Name ?? "",
-                            UpdatedAt = MetadataServices.GetCurrentDateTime(),
-                        };
-                        db.ExperienceDetail.Add(gallery);
+                        return Json(new {result = "failed", message = "no image uploaded."},
+                            JsonRequestBehavior.AllowGet);
                     }
-                    else
+                    for (int i = 0; i < model.ContentImageArray.Count(); i++)
                     {
-                        var gallery = new ExperienceDetail()
+                        string newFileName = "";
+                        var galleryImage =
+                            MetadataServices.UploadToCloud("gallery", model.ContentImageArray[i], out newFileName);
+                        var IsGalleryExist =
+                            db.ExperienceDetail.Any(e => e.LocationId == model.LocationId && !e.LocationContentType);
+                        if (IsGalleryExist)
                         {
-                            LocationId = model.LocationId,
-                            LocationContentType = model.LocationContentType,
-                            LocationContent = galleryImage,
-                            LocationImageName = newFileName,
-                            LocationIndex = 1,
-                            CreatedBy = formsAuthentication.Name ?? "",
-                            CreatedAt = MetadataServices.GetCurrentDateTime(),
-                            UpdatedBy = formsAuthentication.Name ?? "",
-                            UpdatedAt = MetadataServices.GetCurrentDateTime(),
-                        };
-                        db.ExperienceDetail.Add(gallery);
+                            var index = db.ExperienceDetail
+                                .Where(e => e.LocationId == model.LocationId && !e.LocationContentType)
+                                .OrderByDescending(e => e.LocationIndex).Select(e => e.LocationIndex).FirstOrDefault();
+                            //var index = (from e in db.ExperienceDetail
+                            //    where e.LocationId == model.LocationId
+                            //    select e.LocationIndex).LastOrDefault();
+                            var gallery = new ExperienceDetail()
+                            {
+                                LocationId = model.LocationId,
+                                LocationContentType = model.LocationContentType,
+                                LocationContent = galleryImage,
+                                LocationImageName = newFileName,
+                                LocationIndex = index + 1,
+                                CreatedBy = formsAuthentication.Name ?? "",
+                                CreatedAt = MetadataServices.GetCurrentDateTime(),
+                                UpdatedBy = formsAuthentication.Name ?? "",
+                                UpdatedAt = MetadataServices.GetCurrentDateTime(),
+                            };
+                            db.ExperienceDetail.Add(gallery);
+                        }
+                        else
+                        {
+                            var gallery = new ExperienceDetail()
+                            {
+                                LocationId = model.LocationId,
+                                LocationContentType = model.LocationContentType,
+                                LocationContent = galleryImage,
+                                LocationImageName = newFileName,
+                                LocationIndex = 1,
+                                CreatedBy = formsAuthentication.Name ?? "",
+                                CreatedAt = MetadataServices.GetCurrentDateTime(),
+                                UpdatedBy = formsAuthentication.Name ?? "",
+                                UpdatedAt = MetadataServices.GetCurrentDateTime(),
+                            };
+                            db.ExperienceDetail.Add(gallery);
+                        }
+                        db.SaveChanges();
                     }
-                    db.SaveChanges();
-                    return RedirectToAction("Gallery", "Admin", new { id = model.LocationId });
+                    return Json(new {result = "success", returnUrl = "/Admin/Gallery?id=" + model.LocationId + ""},
+                        JsonRequestBehavior.AllowGet);
                 }
                 else //video
                 {
                     if (model.ContentType == "")
                     {
                         ModelState.AddModelError("LocationContent", "Please Enter Video Link.");
-                        return View(new AddGalleryViewModel()
-                        {
-
-                            LocationName = (from e in db.Experience
-                                            select new { e.LocationId, e.LocationName }).ToList().Select(e => new SelectListItem
-                                            {
-                                                Text = e.LocationName,
-                                                Value = e.LocationId.ToString(),
-                                            }).ToList(),
-                            LocationId = model.LocationId,
-                        });
+                        return Json(new { result = "failed", message = "Please Enter Video Link." }, JsonRequestBehavior.AllowGet);
                     }
-                    var IsGalleryExist = db.ExperienceDetail.Any(e => e.LocationId == model.LocationId && e.LocationContentType);
-                    if (IsGalleryExist)
+                    for (int i = 0; i < model.LocationContentArray.Length; i++)
                     {
-                        var index = db.ExperienceDetail.Where(e => e.LocationId == model.LocationId && !e.LocationContentType).OrderByDescending(e => e.LocationIndex).Select(e => e.LocationIndex).FirstOrDefault();
-                        var gallery = new ExperienceDetail()
+                        if (model.LocationContentArray[i] == "")
                         {
-                            LocationId = model.LocationId,
-                            LocationContentType = model.LocationContentType,
-                            LocationContent = model.LocationContent,
-                            LocationIndex = index + 1,
-                            CreatedBy = formsAuthentication.Name ?? "",
-                            CreatedAt = MetadataServices.GetCurrentDateTime(),
-                            UpdatedBy = formsAuthentication.Name ?? "",
-                            UpdatedAt = MetadataServices.GetCurrentDateTime(),
-                        };
-                        db.ExperienceDetail.Add(gallery);
-                    }
-                    else
-                    {
-                        var gallery = new ExperienceDetail()
+                            continue;
+                        }
+                        var isGalleryExist = db.ExperienceDetail.Any(e => e.LocationId == model.LocationId && e.LocationContentType);
+                        if (isGalleryExist)
                         {
-                            LocationId = model.LocationId,
-                            LocationContentType = model.LocationContentType,
-                            LocationContent = model.LocationContent,
-                            LocationIndex = 1,
-                            CreatedBy = formsAuthentication.Name ?? "",
-                            CreatedAt = MetadataServices.GetCurrentDateTime(),
-                            UpdatedBy = formsAuthentication.Name ?? "",
-                            UpdatedAt = MetadataServices.GetCurrentDateTime(),
-                        };
-                        db.ExperienceDetail.Add(gallery);
+                            var index = db.ExperienceDetail.Where(e => e.LocationId == model.LocationId && !e.LocationContentType).OrderByDescending(e => e.LocationIndex).Select(e => e.LocationIndex).FirstOrDefault();
+                            var gallery = new ExperienceDetail()
+                            {
+                                LocationId = model.LocationId,
+                                LocationContentType = model.LocationContentType,
+                                LocationContent = model.LocationContentArray[i],
+                                LocationIndex = index + 1,
+                                CreatedBy = formsAuthentication.Name ?? "",
+                                CreatedAt = MetadataServices.GetCurrentDateTime(),
+                                UpdatedBy = formsAuthentication.Name ?? "",
+                                UpdatedAt = MetadataServices.GetCurrentDateTime(),
+                            };
+                            db.ExperienceDetail.Add(gallery);
+                        }
+                        else
+                        {
+                            var gallery = new ExperienceDetail()
+                            {
+                                LocationId = model.LocationId,
+                                LocationContentType = model.LocationContentType,
+                                LocationContent = model.LocationContentArray[i],
+                                LocationIndex = 1,
+                                CreatedBy = formsAuthentication.Name ?? "",
+                                CreatedAt = MetadataServices.GetCurrentDateTime(),
+                                UpdatedBy = formsAuthentication.Name ?? "",
+                                UpdatedAt = MetadataServices.GetCurrentDateTime(),
+                            };
+                            db.ExperienceDetail.Add(gallery);
+                        }
+                        db.SaveChanges();
                     }
-                    db.SaveChanges();
-                    return RedirectToAction("Gallery", "Admin", new { id = model.LocationId });
+                    return Json(new { result = "success", returnUrl = "/Admin/Gallery?id=" + model.LocationId + "" },
+                        JsonRequestBehavior.AllowGet);
                 }
+                return Json(new { result = "failed", message = "failed" }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -984,7 +1309,11 @@ namespace PrimeHtt.Controllers
                 {
                     return new HttpNotFoundResult("Gallery not found.");
                 }
-                MetadataServices.DeleteFromCloud("gallery", gallery.LocationImageName);
+                if (!gallery.LocationContentType) //image file
+                {
+                    MetadataServices.DeleteFromCloud("gallery", gallery.LocationImageName);
+                }
+                
                 db.ExperienceDetail.Remove(gallery);
                 db.SaveChanges();
                 if (locationId != 0)
@@ -998,12 +1327,42 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
+        public JsonResult BatchDeleteGallery(string[] id)
+        {
+            using (var db = new PrimeTravelEntities())
+            {
+                if (id.Length == 0)
+                {
+                    return Json(new { result = "failed", message = "Please select gallery to delete." }, JsonRequestBehavior.AllowGet);
+                }
+                foreach (var item in id)
+                {
+                    var galleryId = Convert.ToInt64(item);
+                    var gallery = db.ExperienceDetail.Find(galleryId);
+                    if (gallery == null)
+                    {
+                        continue;
+                    }
+                    if (gallery.LocationContentType == false)
+                    {
+                        MetadataServices.DeleteFromCloud("gallery", gallery.LocationImageName);
+                    }
+                    db.ExperienceDetail.Remove(gallery);
+                }
+                db.SaveChanges();
+                return Json(new { result = "success"}, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         //YUAN YEE
+        [Authorize]
         public ActionResult AddBanner()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult AddBanner(BannerModel model)
         {
@@ -1035,6 +1394,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult BannerList()
         {
             using (var db = new PrimeTravelEntities())
@@ -1066,6 +1426,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult EditBanner(int Id)
         {
             using (var db = new PrimeTravelEntities())
@@ -1093,6 +1454,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult EditBanner(BannerModel model)
         {
@@ -1126,6 +1488,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult DeleteBanner(int BannerId)
         {
@@ -1142,11 +1505,13 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult AddSocialNetwork()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult AddSocialNetwork(string SocialNetworkName, string SocialNetworkType, string SocialNetworkLink, string IsActive)
         {
@@ -1170,6 +1535,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult SocialNetworkList()
         {
             using (var db = new PrimeTravelEntities())
@@ -1202,6 +1568,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult EditSocialNetwork(int Id)
         {
             using (var db = new PrimeTravelEntities())
@@ -1230,6 +1597,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult EditSocialNetwork(int SocialNetworkId, string SocialNetworkLink, string IsActive)
         {
@@ -1248,6 +1616,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult DeleteSocialNetwork(int SocialNetworkId)
         {
@@ -1265,11 +1634,13 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult AddService()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult AddService(ServiceModel model)
         {
@@ -1280,6 +1651,7 @@ namespace PrimeHtt.Controllers
                 {
                     Service service = new Service();
                     ServiceInfo serviceInfo = new ServiceInfo();
+                    ServiceViewMore serviceViewMore = new ServiceViewMore();
                     service.ServiceType = model.ServiceType;
                     service.CreatedAt = MetadataServices.GetCurrentDateTime();
                     service.CreatedBy = "Admin";    //change to login username
@@ -1290,7 +1662,15 @@ namespace PrimeHtt.Controllers
                     serviceInfo.ServiceName = model.ServiceName;
                     serviceInfo.ServiceImage = MetadataServices.UploadToCloud("service", model.ServiceImage, out newFileName);
                     serviceInfo.ServiceImageName = model.ServiceImage.FileName + "-" + MetadataServices.GetDateWithoutSlash();
+                    serviceInfo.CreatedAt = MetadataServices.GetCurrentDateTime();
+                    serviceInfo.CreatedBy = "Admin";    //change to login username
+                    serviceInfo.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                    serviceInfo.UpdatedBy = "Admin";    //change to login username
                     db.ServiceInfo.Add(serviceInfo);
+                    serviceViewMore.ServiceId = service.ServiceId;
+                    serviceViewMore.ServiceImage = MetadataServices.UploadToCloud("service", model.ServiceViewMoreImage, out newFileName);
+                    serviceViewMore.ServiceImageName = model.ServiceViewMoreImage.FileName + "-" + MetadataServices.GetDateWithoutSlash();
+                    db.ServiceViewMore.Add(serviceViewMore);
                     db.SaveChanges();
 
                     for (int i = 0; i < model.ServiceItems.Length; i++)
@@ -1299,6 +1679,10 @@ namespace PrimeHtt.Controllers
                         serviceInfo.ServiceImage = MetadataServices.UploadToCloud("service", model.ServiceImage, out newFileName);
                         serviceInfo.ServiceName = model.ServiceItems[i];
                         serviceInfo.ServiceImageName = model.ServiceImage.FileName + "-" + MetadataServices.GetDateWithoutSlash();
+                        serviceInfo.CreatedAt = MetadataServices.GetCurrentDateTime();
+                        serviceInfo.CreatedBy = "Admin";    //change to login username
+                        serviceInfo.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                        serviceInfo.UpdatedBy = "Admin";    //change to login username
                         db.ServiceInfo.Add(serviceInfo);
                         db.SaveChanges();
                     }
@@ -1307,6 +1691,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult ServiceList()
         {
             using (var db = new PrimeTravelEntities())
@@ -1319,6 +1704,12 @@ namespace PrimeHtt.Controllers
                                                   ServiceType = data.ServiceType,
                                                   ServiceTitle = (from t in db.PrimeConfiguration
                                                                   where t.ConfigurationName == "ServiceTitle"
+                                                                  select new PrimeConfigurationModel()
+                                                                  {
+                                                                      ConfigurationValue = t.ConfigurationValue
+                                                                  }).FirstOrDefault(),
+                                                  ServiceSubTitle = (from t in db.PrimeConfiguration
+                                                                  where t.ConfigurationName == "ServiceSubTitle"
                                                                   select new PrimeConfigurationModel()
                                                                   {
                                                                       ConfigurationValue = t.ConfigurationValue
@@ -1340,8 +1731,10 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
-        public ActionResult ChangeServiceTitle(string ServiceTitle)
+        [ValidateInput(false)]
+        public ActionResult ChangeServiceTitle(string ServiceTitle, string ServiceSubTitle)
         {
             using (var db = new PrimeTravelEntities())
             {
@@ -1349,6 +1742,12 @@ namespace PrimeHtt.Controllers
                 {
                     var findST = (from t in db.PrimeConfiguration
                                   where t.ConfigurationName == "ServiceTitle"
+                                  select new PrimeConfigurationModel()
+                                  {
+                                      ConfigurationId = t.ConfigurationId
+                                  }).SingleOrDefault();
+                    var subTitle = (from t in db.PrimeConfiguration
+                                  where t.ConfigurationName == "ServiceSubTitle"
                                   select new PrimeConfigurationModel()
                                   {
                                       ConfigurationId = t.ConfigurationId
@@ -1374,11 +1773,33 @@ namespace PrimeHtt.Controllers
                         db.SaveChanges();
                     }
 
+                    if (subTitle == null)
+                    {
+                        PrimeConfiguration con = new PrimeConfiguration();
+                        con.ConfigurationName = "ServiceSubTitle";
+                        con.ConfigurationValue = ServiceSubTitle;
+                        con.CreatedAt = MetadataServices.GetCurrentDateTime();
+                        con.CreatedBy = "Admin";
+                        con.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                        con.UpdatedBy = "Admin";
+                        db.PrimeConfiguration.Add(con);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        PrimeConfiguration con = db.PrimeConfiguration.Find(subTitle.ConfigurationId);
+                        con.ConfigurationValue = ServiceSubTitle;
+                        con.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                        con.UpdatedBy = "Admin";    //change to login username
+                        db.SaveChanges();
+                    }
+
                 }
                 return RedirectToAction("ServiceList");
             }
         }
 
+        [Authorize]
         public ActionResult EditService(int Id)
         {
             using (var db = new PrimeTravelEntities())
@@ -1390,19 +1811,28 @@ namespace PrimeHtt.Controllers
                                    ServiceId = item.ServiceId,
                                    ServiceType = item.ServiceType,
                                    ServiceInfos = (from u in db.ServiceInfo
-                                                   where u.ServiceId == item.ServiceId
+                                                   where u.ServiceId == item.ServiceId && !u.IsDeleted
                                                    select new ServiceInfoModel()
                                                    {
                                                        ServiceInfoId = u.ServiceInfoId,
                                                        ServiceName = u.ServiceName,
                                                        SImage = u.ServiceImage
                                                    }).ToList(),
+                                   ServiceViewMore = (from v in db.ServiceViewMore
+                                                      where v.ServiceId == item.ServiceId
+                                                      select new ServiceViewMoreModel()
+                                                      {
+                                                          ServiceViewMoreId = v.ServiceViewMoreId,
+                                                          ServiceViewMoreImageName = v.ServiceImageName,
+                                                          SVMImage = v.ServiceImage
+                                                      }).FirstOrDefault(),
                                }).SingleOrDefault();
 
                 return View(service);
             }
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult EditService(ServiceModel model)
         {
@@ -1415,27 +1845,65 @@ namespace PrimeHtt.Controllers
                     service.UpdatedAt = MetadataServices.GetCurrentDateTime();
                     service.UpdatedBy = "Admin";    //change to login username
                     db.SaveChanges();
+                    ServiceViewMore serviceViewMore = db.ServiceViewMore.Find(model.ServiceViewMoreId);
+                    if (model.ServiceViewMoreImage != null)
+                    {
+                        MetadataServices.DeleteFromCloud("service", serviceViewMore.ServiceImageName);
+                        var newViewFileName = "";
+                        serviceViewMore.ServiceImage = MetadataServices.UploadToCloud("service", model.ServiceViewMoreImage, out newViewFileName);
+                        serviceViewMore.ServiceImageName = newViewFileName;
+                    }
+
                     string getImageLink = "";
                     string getImageName = "";
-                    for (int i = 0; i < model.OldServiceItems.Length; i++)
+                    string currentImageName = "";
+                    string newFileName = "";
+                    var currentServiceItems = (from c in db.ServiceInfo
+                                               where c.ServiceId == service.ServiceId
+                                               select new ServiceInfoModel()
+                                               {
+                                                   ServiceInfoId = c.ServiceInfoId
+                                               }).ToList();
+                    for (int main=0; main<currentServiceItems.Count(); main++)
                     {
-                        ServiceInfo serviceInfo = db.ServiceInfo.Find(Convert.ToInt32(model.OldServiceItemId[i]));
+                        ServiceInfo serviceInfo = db.ServiceInfo.Find(currentServiceItems[main].ServiceInfoId);
                         if (model.ServiceImage != null)
                         {
-                            MetadataServices.DeleteFromCloud("service", serviceInfo.ServiceImageName);
-                            var newFileName = "";
-                            serviceInfo.ServiceImage = MetadataServices.UploadToCloud("service", model.ServiceImage, out newFileName);
-                            serviceInfo.ServiceImageName = model.ServiceImage.FileName + "-" + MetadataServices.GetDateWithoutSlash();
-                            getImageLink = serviceInfo.ServiceImage;
-                            getImageName = serviceInfo.ServiceImageName;
+                            currentImageName = serviceInfo.ServiceImageName;
+                            if (main == 0)
+                            {
+                                serviceInfo.ServiceImage = MetadataServices.UploadToCloud("service", model.ServiceImage, out newFileName);
+                                getImageLink = serviceInfo.ServiceImage;
+                                getImageName = serviceInfo.ServiceImageName;
+                            }
+                            else
+                            {
+                                serviceInfo.ServiceImage = getImageLink;
+                            }
+                            serviceInfo.ServiceImageName = newFileName;
                         }
                         else
                         {
                             getImageLink = serviceInfo.ServiceImage;
                             getImageName = serviceInfo.ServiceImageName;
                         }
-                        serviceInfo.ServiceName = model.OldServiceItems[i];
+                        serviceInfo.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                        serviceInfo.UpdatedBy = "Admin";
+                        serviceInfo.IsDeleted = true;
                         db.SaveChanges();
+                    }
+
+                    for (int i = 0; i < model.OldServiceItems.Length; i++)
+                    {
+                        ServiceInfo serviceInfo = db.ServiceInfo.Find(Convert.ToInt32(model.OldServiceItemId[i]));
+                        serviceInfo.ServiceName = model.OldServiceItems[i];
+                        serviceInfo.IsDeleted = false;
+                        db.SaveChanges();
+                    }
+
+                    if (model.ServiceImage != null)
+                    {
+                        MetadataServices.DeleteFromCloud("service", currentImageName);
                     }
 
                     if (model.ServiceItems != null)
@@ -1447,6 +1915,10 @@ namespace PrimeHtt.Controllers
                             newServiceInfo.ServiceImage = getImageLink;
                             newServiceInfo.ServiceName = model.ServiceItems[i];
                             newServiceInfo.ServiceImageName = getImageName;
+                            newServiceInfo.CreatedAt = MetadataServices.GetCurrentDateTime();
+                            newServiceInfo.CreatedBy = "Admin";    //change to login username
+                            newServiceInfo.UpdatedAt = MetadataServices.GetCurrentDateTime();
+                            newServiceInfo.UpdatedBy = "Admin";    //change to login username
                             db.ServiceInfo.Add(newServiceInfo);
                             db.SaveChanges();
                         }
@@ -1456,6 +1928,7 @@ namespace PrimeHtt.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult DeleteService(int ServiceId)
         {

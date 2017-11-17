@@ -9,6 +9,8 @@ namespace PrimeHtt.Models.ViewModel
     {
         public List<BannerModel> Banners { get; set; }
         public string ServiceTitle { get; set; }
+        public string ServiceSubTitle { get; set; }
+        public string ExperienceTitle { get; set; }
         public List<ServiceModel> Services { get; set; }
         public AboutUsViewModel AboutUs { get; set; }
         public ContactUsViewModel ContactUs { get; set; }

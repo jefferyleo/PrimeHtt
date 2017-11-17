@@ -6,17 +6,17 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/lightgallery/latest/css/lightgallery.css" />
 @*<link href="~/Content/lightgallery.css" rel="stylesheet" />*@
 
-<script async defer
+<script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPmtAMPquJDOTGTjHM-e9ssTPq2a3U8QU&callback=initMap">
 </script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/g/lightgallery@1.3.5,lg-fullscreen@1.0.1,lg-hash@1.0.1,lg-pager@1.0.1,lg-share@1.0.1,lg-thumbnail@1.0.1,lg-video@1.0.1,lg-autoplay@1.0.1,lg-zoom@1.0.3"></script>
-
+@*<script src="https://cdn.jsdelivr.net/g/lightgallery@1.3.5,lg-fullscreen@1.0.1,lg-hash@1.0.1,lg-pager@1.0.1,lg-share@1.0.1,lg-thumbnail@1.0.1,lg-video@1.0.1,lg-autoplay@1.0.1,lg-zoom@1.0.3"></script>*@
+<script src="~/Scripts/lightGallery.js"></script>
 <style>
     .lg-sub-html {
         background-color: rgba(0, 0, 0, 0.45);
-        top: 40px;
+        top: 45px;
         color: #EEE;
         font-size: 28px;
         left: 0;
@@ -24,11 +24,11 @@
         position: fixed;
         right: 0;
         text-align: center;
-        z-index: 1080;
+        z-index: 1040;
     }
 </style>
 
-<div id="home" class="w3-content">
+<div id="home">
     <div id="myCarousel" class="carousel slide" data-ride="carousel" style="position:relative;z-index:1;">
         <ol class="carousel-indicators" style="z-index:1 !important">
             @{ int counter = 0; }
@@ -56,7 +56,7 @@
                         <img src="@Model.Banners[i].BImage" style="width:100%;">
                         @if (Model.Banners[i].BannerDescription != "")
                         {
-                            <div class="carousel-caption bannerText">
+                            <div class="carousel-caption bannerText" style="text-align: left;">
                                 <p>@Html.Raw(Model.Banners[i].BannerDescription)</p>
                             </div>
                         }
@@ -68,7 +68,7 @@
                         <img src="@Model.Banners[i].BImage" style="width:100%;">
                         @if (Model.Banners[i].BannerDescription != "")
                         {
-                            <div class="carousel-caption bannerText">
+                            <div class="carousel-caption bannerText" style="text-align: left;">
                                 <p>@Html.Raw(Model.Banners[i].BannerDescription)</p>
                             </div>
                         }
@@ -89,29 +89,27 @@
     </div>
 </div>
 
-<div id="about" style="background: #eeeeee; padding-top: 15px;">
+<div id="about" style="background: #eeeeee; padding-top: 60px; padding-bottom: 60px;">
     <div style="background: #eeeeee; text-align: center;">
         <h2 style="text-align:center;" class="font_2">
             <span class="color_13">
                 <span>@Html.Raw(Model.AboutUs.AboutUsTitle)</span>
             </span>
         </h2>
-        <div class="row">
-            <div class="col-md-12" style="padding: 0px 100px;">
-                @Html.Raw(Model.AboutUs.AboutUsTopDescription)
-            </div>
+        <div style="padding: 0px 40px;">
+            @Html.Raw(Model.AboutUs.AboutUsTopDescription)
         </div>
-        <div class="row">
-            <div class="col-md-12" style="text-align: center">
-                <a href="@Model.AboutUs.AboutUsImageUrl" target="_blank">
-                    <img src="@Model.AboutUs.AboutUsImageUrl"/>
-                </a>
-            </div>
+        <div>
+            @*<div class="col-md-12" style="text-align: center">*@
+            @*<a href="@Model.AboutUs.AboutUsImageUrl" target="_blank">*@
+            <img src="@Model.AboutUs.AboutUsImageUrl" style="width: 90%; text-align: center;" />
+            @*</a>*@
+            @*</div>*@
         </div>
-        <div class="row">
-            <div class="col-md-12" style="text-align: center">
-                <a href="/Home/AboutUsReadMore" class="btn" style="border: grey 1px solid; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 20px 2px; cursor: pointer; border-radius: 30px; background: #eeeeee;font-family: Helvetica Neue, Helvetica, Arial, sans-serif;">READ MORE</a>
-            </div>
+        <div>
+            @*<div class="col-md-12" style="text-align: center">*@
+            <a href="/Home/AboutUsReadMore" class="btn" style="border: #35aeff 1px solid; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 20px 2px; cursor: pointer; border-radius: 10px; background: #0a96f7; color: #fff; width: 180px;">READ MORE</a>
+            @*</div>*@
         </div>
     </div>
 </div>
@@ -120,27 +118,31 @@
     <div class="container">
         <h2 style="text-align:center;" class="font_2">
             <span class="color_13">
-                <span>SERVICES</span>
+                <span>@Html.Raw(Model.ServiceTitle)</span>
             </span>
         </h2>
-        <h3 style="color:#336699; text-align:center; font-weight: 600;">@Model.ServiceTitle</h3>
+        <h3 style="margin-top: -10px !important;">@Html.Raw(Model.ServiceSubTitle)</h3>
         <div style="margin-bottom: 20px; text-align:center;">
             @{ int totalService = Model.Services.Count(); }
             @if (totalService > 2)
             {
                 for (int i = 0; i < Model.Services.Count(); i++)
                 {
-                    <div style="width:32%; display: inline-block;">
+                    <div class="cardStyle1">
                         <figure class="card">
                             <div class="card-image"><img src="@Model.Services[i].ServiceInfos[0].SImage"></div>
                             <figcaption class="card-reveal">
-                                <h5 class="card-title">@Model.Services[i].ServiceType</h5>
+                                <h7 class="card-title">@Model.Services[i].ServiceType</h7>
                                 <ul class="ul-default ulFont">
                                     @for (int j = 0; j < Model.Services[i].ServiceInfos.Count(); j++)
                                     {
                                         <li>@Model.Services[i].ServiceInfos[j].ServiceName</li>
                                     }
                                 </ul>
+                                <div class="card-action">
+                                    @*<a id="viewMore" class="btn btn-block viewmore" href="@Model.Services[i].ServiceViewMore.SVMImage">READ MORE</a>*@
+                                    <a  id="viewMore" class="btn btn-block viewmore" href="@(Url.Action("ServicesInfo", "Home", new { id = Model.Services[i].ServiceId }))">READ MORE</a>
+                                </div>
                             </figcaption>
                         </figure>
                     </div>
@@ -150,17 +152,22 @@
             {
                 for (int i = 0; i < Model.Services.Count(); i++)
                 {
-                    <div style="width:32%; display: inline-block; margin: 10px;">
+                    <div class="cardStyle2">
                         <figure class="card">
                             <div class="card-image"><img src="@Model.Services[i].ServiceInfos[0].SImage"></div>
                             <figcaption class="card-reveal">
-                                <h5 class="card-title">@Model.Services[i].ServiceType</h5>
+                                <h7 class="card-title">@Model.Services[i].ServiceType</h7>
                                 <ul class="ul-default ulFont">
                                     @for (int j = 0; j < Model.Services[i].ServiceInfos.Count(); j++)
                                     {
                                         <li>@Model.Services[i].ServiceInfos[j].ServiceName</li>
                                     }
                                 </ul>
+                                <div class="card-action">
+                                    @*<a href="#" class="btn btn-block viewmore">View More</a>*@
+                                    @*<a id="viewMore" class="btn btn-block viewmore" href="@Model.Services[i].ServiceViewMore.SVMImage">READ MORE</a>*@
+                                    <a id="viewMore" class="btn btn-block viewmore" href="@(Url.Action("ServicesInfo", "Home", new { id = Model.Services[i].ServiceId }))">READ MORE</a>
+                                </div>
                             </figcaption>
                         </figure>
                     </div>
@@ -170,60 +177,58 @@
     </div>
 </div>
 
-<div id="experiences" class="container">
+<div id="experiences" style="padding-top: 60px; padding-bottom: 90px;">
     <h2 style="text-align:center;" class="font_2">
         <span class="color_13">
-            <span>EXPERIENCES</span>
+            <span>@Html.Raw(Model.ExperienceTitle)</span>
         </span>
     </h2>
-    <div class="row">
-        <div id="experienceMap" style="width: 100%; height: 400px;"></div>
+    <div>
+        <div id="experienceMap" style="width: 100%; height: 560px;"></div>
     </div>
 </div>
 
 <div id="experieneGallery" style="display: none;">
-    <ul id="lightGallery">
-        
-    </ul>
+    <ul id="lightGallery"></ul>
 </div>
 
-<div id="contact" class="tabBackground">
+<div id="contact" class="tabBackground" style="margin-bottom: -20px; padding-top: 60px; padding-bottom: 60px;">
     <div class="container">
         <h2 style="text-align:center;" class="font_2">
             <span class="color_13">
-                <span>CONTACT US</span>
+                <span>@Html.Raw(Model.ContactUs.ContactTitle)</span>
             </span>
         </h2>
-        <div class="row">
-            <div class="col-md-6" style="padding-left: 85px;">
-                <div style="height: 486px;">
+        <div class="row" style="margin-bottom:30px;">
+            <div class="col-md-6 addressStyle">
+                <div>
                     <div class="row" style="">
-                        <div class="col-md-12" >
+                        <div class="col-md-12">
                             <h2>Address</h2>
-                            <span style="font-size: 18px;">@Model.ContactUs.ContactAddress</span>
+                            <span style="font-size: 18px;">@Html.Raw(Model.ContactUs.ContactAddress)</span>
                         </div>
                     </div>
                     <div class="row" style="">
                         <div class="col-md-12">
                             @if (Model.ContactUs.ContactDetails.Count > 0)
                             {
-                                <h2>Tel Reservation</h2>
+                                <h2>Contact Us</h2>
                                 foreach (var reservation in Model.ContactUs.ContactDetails)
-                                 {
-                                     <span style="font-size: 18px;">@reservation.ReservationTitle</span>
-                                     <text>:</text>
-                                     <span style="font-size: 18px;">@reservation.ContactNumber</span>
-                                     <br/>
-                                 }
+                                {
+                                    <span style="font-size: 18px;">@reservation.ReservationTitle</span>
+                                    <text>:</text>
+                                    <span style="font-size: 18px;">@reservation.ContactNumber</span>
+                                    <br />
+                                }
                             }
-                            <br/>
+                            <br />
                             @if (Model.ContactUs.ContactEmails.Count > 0)
                             {
                                 <span style="font-size: 18px;">Email :</span>
                                 foreach (var email in Model.ContactUs.ContactEmails)
                                 {
-                                    <span style="font-size: 18px;">@email.ContactEmailAddress</span>
-                                    <br/><span style="margin-left: 55px;"></span>
+                                    <span style="font-size: 18px;"><a href="mailto:@email.ContactEmailAddress">@email.ContactEmailAddress</a></span>
+                                    <br /><span style="margin-left: 55px;"></span>
                                 }
                             }
                         </div>
@@ -232,20 +237,23 @@
             </div>
             <div class="col-md-6">
                 <div>
-                    <div style="position: absolute;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              top: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              left: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              width: 90px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              height: 400px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              background-color: transparent;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              border-top: 500px solid #f8f8f8;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              border-right: 130px solid transparent;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              z-index: 2;">
-
-                    </div>
+                    @*<div class="slashCover"></div>*@
                     <div id="map" style="width: 100%; height: 400px;"></div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <input id="ContactName" name="ContactName" class="form-control" placeholder="Name*" style="margin: 5px;" />
+                <input id="ContactEmail" name="ContactEmail" class="form-control" placeholder="Email Address*" style="margin: 5px;"/>
+                <input id="Subject" name="Subject" class="form-control" placeholder="Subject" style="margin: 5px;"/>
+            </div>
+            <div class="col-md-6">
+                <textarea id="Message" name="Message" class="form-control" style="height: 113px; width: 100%;margin: 5px;" placeholder="Message"></textarea>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button id="sendEmail" class="btn" style="border: #35aeff 1px solid; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 20px 2px; cursor: pointer; border-radius: 10px; background: #0a96f7; color: #fff; width: 180px;">SEND</button>
         </div>
     </div>
 </div>
@@ -254,7 +262,7 @@
     initMap();
 
     $(document).ready(function () {
-        $('a[href^="#"]').on('click', function (e) {
+        $('a[href^="/Home/#"]').on('click', function (e) {
             e.preventDefault();
 
             var target = this.hash;
@@ -267,58 +275,125 @@
             });
         });
 
+        //$("a#viewMore").fancybox({
+        //    'overlayShow'	: false,
+        //    'transitionIn'	: 'elastic',
+        //    'transitionOut'	: 'elastic',
+        //});
+
+        $('#sendEmail').click(function() {
+            $.ajax({
+                type: "GET",
+                url: '/Home/SendMail?name=' + $('#ContactName').val() + '&email=' + $('#ContactEmail').val() + '&subject=' + $('#Subject').val() + '&message=' + $('#Message').val() +'',
+                success: function (response) {
+                    if (response.result === "success") {
+                        swal("Sent!", "", "success");
+                    } else {
+                        swal(response.message, "", "error");
+                    }
+                },
+                error: function (error) {
+                    alert(error.message);
+                }
+            });
+        });
+
+        $(document).on('click', '#closeSlider', function () {
+            $('#lightGallery').empty();
+        });
+
+        $("#lightGallery").on('onCloseAfter.lg', function(event) {
+            $("#lightGallery").children().remove();
+            $("#lightGallery").toggle();
+            //$lg.lightGallery().destroy(true);
+            $("#lightGallery").data('lightGallery').destroy(true);
+        });
+
         experienceMap();
 
         function experienceMap() {
-            var test = @Html.Raw(Json.Encode(Model.Experiences));
-
-            @*// Create an array of alphabetical characters used to label the markers.
-        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        var map = new google.maps.Map(document.getElementById('experienceMap'), {
-            zoom: 2,
-            center: new google.maps.LatLng(0, 0),
-        });
-
-        var infowindow = new google.maps.InfoWindow();
-
-        var marker, i;
-
-        for (i = 0; i < locations.length; i++) {
-            marker = new google.maps.Marker({
-                position: new google.maps.LatLng(locations[i].Latitude, locations[i].Longitude),
-                map: map,
-                label: labels[i % labels.length],
-            });
-
-            google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                return function() {
-                    infowindow.setContent(locations[i].LocationName);
-                    infowindow.open(map, marker);
-                }
-            })(marker, i));
-        }
-        var markerCluster = new MarkerClusterer(map, marker,
-            { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });*@
 
             var map = new google.maps.Map(document.getElementById('experienceMap'), {
-                zoom: 2,
-                //center: {lat: -28.024, lng: 140.887}
+                zoom: 3,
                 center: {lat: 0, lng: 0}
             });
 
-            // Create an array of alphabetical characters used to label the markers.
-            //var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-            //var locations = [
-            //    {lat: -18.085402, lng: 178.789063},
-            //    { lat: -17.129341, lng: 179.986099 }]
             var locations = @Html.Raw(Json.Encode(Model.Experiences));
 
-            // Add some markers to the map.
-            // Note: The code uses the JavaScript Array.prototype.map() method to
-            // create an array of markers based on a given "locations" array.
-            // The map() method here has nothing to do with the Google Maps API.
+            var marker, i;
+            var markers = [];
+
+            for (i = 0; i < locations.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: { lat: locations[i].Latitude, lng: locations[i].Longitude },
+                    map: map
+            });
+                marker.set("id", locations[i].LocationId);
+                markers.push(marker);
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        $.ajax({
+                            type: "GET",
+                            url: '/Home/GetGalleryFromLocation/' + marker.get("id") +'',
+                            success: function (response) {
+                                if (response.result === "success") {
+                                    response.galleries.forEach(function(gallery) {
+                                        $('#lightGallery').append('<li data-src="'+ gallery.LocationContent +'" data-sub-html="'+ response.LocationName +'"><img id="gallery'+ gallery.LocationId +'" src="'+ gallery.LocationContent +'" /></li>');
+                                    });
+                                    $("#lightGallery").lightGallery();
+                                    $('#gallery'+ response.galleries[0].LocationId +'').trigger('click');
+                                } else {
+                                    swal(response.location, response.message, "error");
+                                }
+                            },
+                            error: function (error) {
+                                alert(error.message);
+                            }
+                        });
+                    }
+                })(marker, i));
+            }
+
+            //var markers = locations.map(function (location, i) {
+
+            //    var marker =  new google.maps.Marker({
+            //        position: {lat: location.Latitude, lng: location.Longitude},
+            //    });
+            //    marker.set("id", location.LocationId);
+            //    marker.addListener('click', function () {
+            //        $.ajax({
+            //            type: "GET",
+            //            url: '/Home/GetGalleryFromLocation/' + marker.get("id") +'',
+            //            success: function (response) {
+            //                if (response.result === "success") {
+            //                    response.galleries.forEach(function(gallery) {
+            //                        $('#lightGallery').append('<li data-src="'+ gallery.LocationContent +'" data-sub-html="'+ response.LocationName +'"><img id="gallery'+ gallery.LocationId +'" src="'+ gallery.LocationContent +'" /></li>');
+            //                    });
+            //                    $("#lightGallery").lightGallery();
+            //                    $('#gallery'+ response.galleries[0].LocationId +'').trigger('click');
+            //                } else {
+            //                    swal(response.location, response.message, "error");
+            //                }
+            //            },
+            //            error: function (error) {
+            //                alert(error.message);
+            //            }
+            //        });
+            //        console.log(marker.get("id"));
+            //    });
+            //    return marker;
+            //});
+            
+        }
+
+        @*function experienceMap() {
+
+            var map = new google.maps.Map(document.getElementById('experienceMap'), {
+                zoom: 2,
+                center: {lat: 0, lng: 0}
+            });
+            var locations = @Html.Raw(Json.Encode(Model.Experiences));
             var markers = locations.map(function (location, i) {
 
                 var marker =  new google.maps.Marker({
@@ -337,7 +412,7 @@
                                 $("#lightGallery").lightGallery();
                                 $('#gallery'+ response.galleries[0].LocationId +'').trigger('click');
                             } else {
-                                swal(response.message, "", "error");
+                                swal(response.location, response.message, "error");
                             }
                         },
                         error: function (error) {
@@ -351,16 +426,16 @@
 
             // Add a marker clusterer to manage the markers.
             var markerCluster = new MarkerClusterer(map, markers,
-                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-        }
+                { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+        }*@
 
     });
 
     function initMap() {
-        var uluru = {lat: @Model.ContactUs.ContactLatitude, lng: @Model.ContactUs.ContactLongitude};
+        var location = {lat: @Model.ContactUs.ContactLatitude, lng: @Model.ContactUs.ContactLongitude};
         var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 13,
-            center: uluru
+            zoom: 17,
+            center: location
         });
 
         var contentString = '@Model.ContactUs.ContactName';
@@ -370,7 +445,7 @@
         });
 
         var marker = new google.maps.Marker({
-            position: uluru,
+            position: location,
             map: map,
             title: '@Model.ContactUs.ContactName'
         });
@@ -378,6 +453,4 @@
             infowindow.open(map, marker);
         });
     }
-
-
 </script>

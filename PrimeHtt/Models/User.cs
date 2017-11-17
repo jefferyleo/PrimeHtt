@@ -22,5 +22,8 @@ namespace PrimeHtt.Models
         public string UpdatedBy { get; set; }
         public System.DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsPasswordChanging { get; set; }
+        public string NewPassword { get; set; }
+        public string NewUsername { get; set; }
     }
 }

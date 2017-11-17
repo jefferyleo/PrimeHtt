@@ -1,0 +1,18 @@
+﻿@model PrimeHtt.Models.ViewModel.ServiceModel
+@{
+    ViewBag.Title = "ServicesInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1 style="text-align: center; margin-top: 100px;">
+    <span>
+        <p><span style="font-size:48px"><strong><span style="color:#bdc3c7">@Model.ServiceType</span></strong></span></p>
+    </span>
+</h1>
+
+<div class="container" style="text-align: center;">
+    <div class="row">
+        <div class="col-md-12" style="text-align: center">
+            <img src="@Model.ServiceViewMore.SVMImage" style="width: 90%;" />
+        </div>
+    </div>
+</div>

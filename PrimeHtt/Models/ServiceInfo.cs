@@ -20,6 +20,11 @@ namespace PrimeHtt.Models
         public string ServiceImage { get; set; }
         public long ServiceId { get; set; }
         public string ServiceImageName { get; set; }
+        public string CreatedBy { get; set; }
+        public System.DateTime CreatedAt { get; set; }
+        public string UpdatedBy { get; set; }
+        public System.DateTime UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
     
         public virtual Service Service { get; set; }
     }

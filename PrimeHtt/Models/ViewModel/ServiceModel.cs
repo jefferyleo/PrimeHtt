@@ -27,5 +27,11 @@ namespace PrimeHtt.Models.ViewModel
         public string[] OldServiceItemId { get; set; }
         public string ServiceImageName { get; set; }
         public PrimeConfigurationModel ServiceTitle { get; set; }
+        public PrimeConfigurationModel ServiceSubTitle { get; set; }
+        public long ServiceViewMoreId { get; set; }
+        public HttpPostedFileBase ServiceViewMoreImage { get; set; }
+        public ServiceInfoModel SVMImage { get; set; }
+        public string ServiceViewMoreImageName { get; set; }
+        public ServiceViewMoreModel ServiceViewMore { get; set; }
     }
 }

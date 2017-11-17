@@ -36,6 +36,7 @@ namespace PrimeHtt.Models
         public virtual DbSet<PrimeConfiguration> PrimeConfiguration { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<ServiceInfo> ServiceInfo { get; set; }
+        public virtual DbSet<ServiceViewMore> ServiceViewMore { get; set; }
         public virtual DbSet<SocialNetwork> SocialNetwork { get; set; }
         public virtual DbSet<User> User { get; set; }
     }

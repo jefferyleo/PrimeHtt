@@ -5,20 +5,22 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="750c60fb1e0e4f8baa01587e895eb2a7" Name="Diagram1">
-        <EntityTypeShape EntityType="PrimeTravelModel.AboutUs" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.Banner" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.Contact" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.ContactDetail" Width="1.5" PointX="7.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.ContactEmail" Width="1.5" PointX="5.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.Experience" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.ExperienceDetail" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.PrimeConfiguration" Width="1.5" PointX="7.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.Service" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.ServiceInfo" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.SocialNetwork" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PrimeTravelModel.User" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
-        <AssociationConnector Association="PrimeTravelModel.fk_ExperienceExperienceDetail_LocationId" ManuallyRouted="false" />
-        <AssociationConnector Association="PrimeTravelModel.fk_ServiceServiceInfo_ServiceId" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="PrimeTravelModel.AboutUs" Width="1.5" PointX="5.75" PointY="5.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.Banner" Width="1.5" PointX="7.75" PointY="5.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.Contact" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.ContactDetail" Width="1.5" PointX="2.75" PointY="8.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.ContactEmail" Width="1.5" PointX="4.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.Experience" Width="1.5" PointX="5.75" PointY="1.125" />
+        <EntityTypeShape EntityType="PrimeTravelModel.ExperienceDetail" Width="1.5" PointX="8" PointY="1" />
+        <EntityTypeShape EntityType="PrimeTravelModel.PrimeConfiguration" Width="1.5" PointX="9.75" PointY="5.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.Service" Width="1.5" PointX="0.75" PointY="2.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.ServiceInfo" Width="1.5" PointX="3" PointY="3.875" />
+        <EntityTypeShape EntityType="PrimeTravelModel.ServiceViewMore" Width="1.5" PointX="3" PointY="1.125" />
+        <EntityTypeShape EntityType="PrimeTravelModel.SocialNetwork" Width="1.5" PointX="6.75" PointY="9.75" />
+        <EntityTypeShape EntityType="PrimeTravelModel.User" Width="1.5" PointX="8.75" PointY="9.75" />
+        <AssociationConnector Association="PrimeTravelModel.fk_ExperienceExperienceDetail_LocationId" />
+        <AssociationConnector Association="PrimeTravelModel.fk_ServiceServiceInfo_ServiceId" />
+        <AssociationConnector Association="PrimeTravelModel.fk_ServiceServiceViewMore_ServiceId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

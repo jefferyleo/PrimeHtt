@@ -4,16 +4,20 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="row">
+    <h1 class="page-header">Edit Contact</h1>
+</div>
+
 <form id="EditReservationContact" name="EditReservationContact" method="post">
     <input type="hidden" id="ContactDetailId" name="ContactDetailId" value="@Model.ContactDetailId" />
     <div class="row">
-        <div class="col-md-12 col-lg-6 col-lg-offset-3">
+        @*<div class="col-md-12 col-lg-6 col-lg-offset-3">
             <h1 class="page-header">Edit Reservation Contact</h1>
-        </div>
-        <div class="col-md-6 col-lg-3 col-lg-offset-3">
+        </div>*@
+        <div class="col-md-12 col-lg-6 col-lg-offset-3">
             <div class="form-group">
-                <label for="ReservationTitle">Reservation Title</label>
-                <input type="text" id="ReservationTitle" name="ReservationTitle" class="form-control" placeholder="Enter Reservation Title" value="@Model.ReservationTitle"/>
+                <label for="ReservationTitle">Title</label>
+                <input type="text" id="ReservationTitle" name="ReservationTitle" class="form-control" placeholder="Enter Title" value="@Model.ReservationTitle"/>
                 @Html.ValidationMessageFor(e => e.ReservationTitle)
             </div>
             <div class="form-group">
@@ -25,7 +29,7 @@
     </div>
     <div class="row">
         <div class="col-md-12 col-lg-9">
-            <button type="submit" class="btn btn-primary pull-right">Update</button>
+            <button type="submit" class="btn btn-primary pull-right">Edit Contact</button>
         </div>
     </div>
 </form>

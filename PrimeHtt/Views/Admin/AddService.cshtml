@@ -18,7 +18,7 @@
             <div class="form-group">
                 <label for="ServiceImage" id="lblServiceImage">Service Background Image</label>
                 <input type="file" id="ServiceImage" name="ServiceImage" accept="image/png, image/jpeg, image/jpg" oninput="setCustomValidity('')" required onchange="document.getElementById('showPromo').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
-                <i style="color:crimson;">** Recommended Image Resolution 260px*350px</i>
+                <i style="color:crimson;">** Recommended Image Resolution 523px*434px</i>
                 <br />
                 <img id="showPromo" style="width:50%; display:none;" />
             </div>
@@ -32,6 +32,13 @@
                 <input type="text" id="ServiceName" name="ServiceName" class="form-control" placeholder="Enter Service Item Name" oninput="setCustomValidity('')" required />
             </div>
             <div id="itemDiv">
+            </div>
+            <div class="form-group">
+                <label for="ViewMoreImage" id="lblViewMoreImage">View More Image</label>
+                <input type="file" id="ViewMoreImage" name="ServiceImage" accept="image/png, image/jpeg, image/jpg, image/gif" oninput="setCustomValidity('')" required onchange="document.getElementById('showPromo2').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo2').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
+                <i style="color:crimson;">** Recommended Image Resolution 1920px*1080px</i>
+                <br />
+                <img id="showPromo2" style="width:50%; display:none;" />
             </div>
         </div>
     </div>
@@ -60,6 +67,7 @@
             var type = $('#ServiceType').val();
             var sName = $('#ServiceName').val();
             var image = document.getElementById('ServiceImage').files[0];
+            var viewMoreImage = document.getElementById('ViewMoreImage').files[0];
             var serviceItems = [];
             for (var i = 0; i < $('#itemDiv').children().length; i++) {
                 var name = "#" + $('#itemDiv').children().children('div').children('input')[i].id
@@ -81,6 +89,7 @@
             formData.append('ServiceType', $('#ServiceType').val());
             formData.append('ServiceName', $('#ServiceName').val());
             formData.append('ServiceImage', document.getElementById('ServiceImage').files[0]);
+            formData.append('ServiceViewMoreImage', document.getElementById('ViewMoreImage').files[0]);
             for (var i = 0; i < serviceItems.length; i++) {
                 formData.append('ServiceItems[]', serviceItems[i]);
             }
@@ -104,6 +113,13 @@
             } else {
                 $("#lblServiceName .asterisk").remove();
                 $('#lblServiceName').html('Service Name');
+            }
+
+            if (viewMoreImage == undefined) {
+                $('#lblViewMoreImage').html('<span class="asterisk">*Please Select View More Image</span>');
+            } else {
+                $("#lblViewMoreImage .asterisk").remove();
+                $('#lblViewMoreImage').html('View More Image');
             }
 
             if ($('.asterisk').val() == undefined) {

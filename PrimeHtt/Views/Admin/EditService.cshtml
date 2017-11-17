@@ -22,9 +22,9 @@
             <div class="form-group">
                 <label for="ServiceImage" id="lblServiceImage">Service Background Image</label>
                 <input type="file" id="ServiceImage" name="ServiceImage" accept="image/png, image/jpeg, image/jpg" oninput="setCustomValidity('')" required onchange="document.getElementById('showPromo').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
-                <i style="color:crimson;">** Recommended Image Resolution 260px*350px</i>
+                <i style="color:crimson;">** Recommended Image Resolution 523px*434px</i>
                 <br />
-                <img id="showPromo" style="width:50%; display:none;" src="@Model.ServiceInfos.ToList()[0].SImage" />
+                <img id="showPromo" style="width:50%; display:block;" src="@Model.ServiceInfos.ToList()[0].SImage" />
             </div>
             <div class="row">
                 <div class="col-md-12 col-lg-12">
@@ -37,16 +37,32 @@
                     string infoId = "ServiceInfoId" + Model.ServiceInfos.ToList()[i].ServiceInfoId;
                     string infoName = "ServiceInfoName" + (i+1);
                     string lblInfoName = "lbl" + infoName;
-                    <div class="form-group" style="display: none;">
-                        <input type="text" id="@infoId" name="@infoId" value="@Model.ServiceInfos.ToList()[i].ServiceInfoId" class="form-control sId" />
-                    </div>
-                    <div class="form-group">
+                    string removeName = "RemoveOld" + (i + 1);
+                    string inputGroup = "OldItem" + (i + 1);
+                    
+                    <div class="input-group" style="width: 100%; margin-bottom: 15px;" id="@inputGroup">
+                        <div class="form-group" style="display: none;">
+                            <input type="text" id="@infoId" name="@infoId" value="@Model.ServiceInfos.ToList()[i].ServiceInfoId" class="form-control sId" />
+                        </div>
                         <label for="@infoName" id="@lblInfoName">Service Item Name</label>
-                        <input type="text" id="@infoName" name="@infoName" class="form-control sName" placeholder="Enter Service Item Name" value="@Model.ServiceInfos.ToList()[i].ServiceName" oninput="setCustomValidity('')" required />
+                        <input type="text" id="@infoName" name="@infoName" style="width: 90%;" class="form-control sName" placeholder="Enter Service Item Name" value="@Model.ServiceInfos.ToList()[i].ServiceName" oninput="setCustomValidity('')" required />
+                        <a id="@removeName" class="btn btn-default" style="width: 10%;" onclick="removeOldSection(@(i+1))">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </a>
                     </div>
                 }
             </div>
             <div id="itemDiv">
+            </div>
+            <div class="form-group">
+                <label for="ViewMoreImage" id="lblViewMoreImage">View More Image</label>
+                <div class="form-group" style="display: none;">
+                    <input type="text" id="ViewMoreId" name="ViewMoreId" value="@Model.ServiceViewMore.ServiceViewMoreId" class="form-control" />
+                </div>
+                <input type="file" id="ViewMoreImage" name="ViewMoreImage" accept="image/png, image/jpeg, image/jpg, image/gif" oninput="setCustomValidity('')" required onchange="document.getElementById('showPromo').style.display = 'block'; if (this.files && this.files[0]) { var reader = new FileReader(); reader.onload = function (e) { $('#showPromo2').attr('src', e.target.result); }; reader.readAsDataURL(this.files[0]); }" />
+                <i style="color:crimson;">** Recommended Image Resolution 1920px*1080px</i>
+                <br />
+                <img id="showPromo2" style="width:50%; display:block;" src="@Model.ServiceViewMore.SVMImage" />
             </div>
         </div>
     </div>
@@ -75,6 +91,7 @@
             var type = $('#ServiceType').val();
             //var sName = $('#ServiceName').val();
             var image = document.getElementById('ServiceImage').files[0];
+            var viewMoreImage = document.getElementById('ViewMoreImage').files[0];
             var newServiceItems = [];
             var oldServiceItemId = [];
             var oldServiceItems = [];
@@ -137,6 +154,13 @@
                 }
             }
 
+            if(viewMoreImage == undefined){
+                formData.append('ServiceViewMoreId', $('#ViewMoreId').val());
+            } else {
+                formData.append('ServiceViewMoreId', $('#ViewMoreId').val());
+                formData.append('ServiceViewMoreImage', document.getElementById('ViewMoreImage').files[0]);
+            }
+
             if (type == "") {
                 $('#lblServiceType').html('<span class="asterisk">*Please Enter Service Type</span>');
             } else {
@@ -177,6 +201,11 @@
 
     function removeSection(counter) {
         var id = "Item" + counter;
+        document.getElementById(id).remove();
+    }
+
+    function removeOldSection(i) {
+        var id = "OldItem" + i;
         document.getElementById(id).remove();
     }
 </script>

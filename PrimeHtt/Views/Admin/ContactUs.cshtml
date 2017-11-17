@@ -14,23 +14,44 @@
 {
     <form id="ContactUsForm" name="ContactUsForm" method="post">
         <div class="row">
-            <div class="col-md-6 col-lg-3 col-lg-offset-3">
+            <div class="col-md-12 col-lg-6 col-lg-offset-3">
                 <div class="form-group">
+                    <div id="divContactTitle" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblContactTitle" for="ContactTitle"></label>
+                    </div>
+                    <label for="ContactTitle">Contact Title</label>
+                    <input id="ContactTitleInput" hidden value="@Model.ContactTitle" />
+                    <textarea id="ContactTitle" name="ContactTitle"></textarea>
+                    @Html.ValidationMessageFor(e => e.ContactTitle)
+                </div>
+                <div class="form-group">
+                    <div id="divContactAddress" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblContactAddress" for="ContactAddress"></label>
+                    </div>
                     <label for="ContactName">Contact Name</label>
-                    <input type="text" id="ContactName" name="ContactName" class="form-control" placeholder="Enter Contact Name" value="@Model.ContactName"/>
+                    <input type="text" id="ContactName" name="ContactName" class="form-control" placeholder="Enter Contact Name" value="@Model.ContactName" />
                     @Html.ValidationMessageFor(e => e.ContactName)
                 </div>
                 <div class="form-group">
+                    <div id="divContactAddress" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblContactAddress" for="ContactAddress"></label>
+                    </div>
                     <label for="ContactAddress">Contact Address</label>
-                    <input type="text" id="ContactAddress" name="ContactAddress" class="form-control" placeholder="Enter Contact Address" value="@Model.ContactAddress"/>
+                    <input id="ContactAddressInput" hidden value="@Model.ContactAddress" />
+                    <textarea id="ContactAddress" name="ContactAddress"></textarea>
                     @Html.ValidationMessageFor(e => e.ContactAddress)
                 </div>
-                <p style="color:grey"><small>*Contact Name and Address will show on map.</small></p>
+                <p style="color: grey">
+                    <small>*Contact Name and Address will show on map.</small>
+                </p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 col-lg-9">
-                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                <button id="btnSave" type="submit" class="btn btn-primary pull-right">Save</button>
             </div>
         </div>
     </form>
@@ -41,15 +62,31 @@ else
         <div class="row">
             <div class="col-md-6 col-lg-3 col-lg-offset-3">
                 <div class="form-group">
+                    <div id="divContactTitle" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblContactTitle" for="ContactTitle"></label>
+                    </div>
+                    <label for="ContactTitle">Contact Title</label>
+                    <input id="ContactTitleInput" hidden value="@Model.ContactTitle" />
+                    <textarea id="ContactTitle" name="ContactTitle"></textarea>
+                    @Html.ValidationMessageFor(e => e.ContactTitle)
+                </div>
+                <div class="form-group">
                     <label for="ContactName">Contact Name</label>
                     <input type="text" id="ContactName" name="ContactName" class="form-control" placeholder="Enter Contact Name" value="" />
                     @Html.ValidationMessageFor(e => e.ContactName)
                 </div>
                 <div class="form-group">
+                    <div id="divContactAddress" class="alert alert-danger alert-dismissible" hidden role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <strong>Error! </strong><label id="lblContactAddress" for="ContactAddress"></label>
+                    </div>
                     <label for="ContactAddress">Contact Address</label>
-                    <input type="text" id="ContactAddress" name="ContactAddress" class="form-control" placeholder="Enter Contact Address" value="" />
+                    @*<input type="text" id="ContactAddress" name="ContactAddress" class="form-control" placeholder="Enter Contact Address" value=""/>*@
+                    <textarea id="ContactAddress" name="ContactAddress"></textarea>
                     @Html.ValidationMessageFor(e => e.ContactAddress)
                 </div>
+
             </div>
         </div>
         <div class="row">
@@ -64,43 +101,43 @@ else
     <div class="col-md-12">
         <div class="page-header">
             <h1>
-                Reservation Contact
+                Contact
                 <a href="@Url.Action("AddReservationContact", "Admin")" class="btn btn-primary pull-right">
                     <span class="glyphicon glyphicon-plus"></span>
-                    Add New Reservation Contact
+                    Add New Contact
                 </a>
             </h1>
         </div>
         <div class="table-responsive">
             <table id="ReservationContactTable" class="table table-bordered table-hover table-striped">
                 <thead>
-                <tr>
-                    <th data-column-id="ContactDetailId" data-identifier="true" data-visible="false">Reservation Contact Id</th>
-                    <th data-column-id="ReservationTitle">Reservation Title</th>
-                    <th data-column-id="ContactNumber">Contact Number</th>
-                    <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
-                </tr>
+                    <tr>
+                        <th data-column-id="ContactDetailId" data-identifier="true" data-visible="false">Contact Id</th>
+                        <th data-column-id="ReservationTitle">Title</th>
+                        <th data-column-id="ContactNumber">Contact Number</th>
+                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @if (Model != null && Model.ContactDetails.Count > 0)
-                {
-                    foreach (var item in Model.ContactDetails)
+                    @if (Model != null && Model.ContactDetails.Count > 0)
+                    {
+                        foreach (var item in Model.ContactDetails)
+                        {
+                            <tr>
+                                <td>@item.ContactDetailId</td>
+                                <td>@item.ReservationTitle</td>
+                                <td>@item.ContactNumber</td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@item.ContactDetailId</td>
-                            <td>@item.ReservationTitle</td>
-                            <td>@item.ContactNumber</td>
+                            <td colspan="4">
+                                No Contact.
+                            </td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="4">
-                            No Reservation Contact.
-                        </td>
-                    </tr>
-                }
                 </tbody>
             </table>
         </div>
@@ -163,34 +200,88 @@ else
 </div>
 
 <script>
+    CKEDITOR.replace('ContactTitle',
+        {
+            startupFocus: false
+        });
+    CKEDITOR.replace('ContactAddress',
+        {
+            startupFocus: false
+        });
+
+    @if (Model != null)
+    {
+        <text>
+            var contactAddress = $('#ContactAddressInput').val();
+            var contactTitle = $('#ContactTitleInput').val();
+            CKEDITOR.on('instanceReady', function (evt) {
+                if (evt.editor.name === "ContactAddress") {
+                    CKEDITOR.instances['ContactAddress'].insertHtml(unescapeHtml(contactAddress));
+                }
+                else if (evt.editor.name === "ContactTitle") {
+                    CKEDITOR.instances['ContactTitle'].insertHtml(unescapeHtml(contactTitle));
+                }
+            });
+        </text>
+    }
+
     @if (Model.ContactDetails.Count > 0)
     {
         <text>
-    $("#ReservationContactTable").bootgrid({
-        ajax: false,
-        caseSensitive: false,
-        formatters: {
-            "ActionColumnBar": function (column, row) {
-                var el = $("div.reservation-column-bar").html();
-                el = el.replace("%7BContactDetailId%7D", row.ContactDetailId).replace("%7BContactDetailId%7D", row.ContactDetailId);
-                return el;
-            }
-        }
-    }).on("loaded.rs.jquery.bootgrid", function () {
-        $(this).find('[data-toggle="tooltip"]').tooltip();
+            $("#ReservationContactTable").bootgrid({
+                ajax: false,
+                caseSensitive: false,
+                formatters: {
+                    "ActionColumnBar": function (column, row) {
+                        var el = $("div.reservation-column-bar").html();
+                        el = el.replace("%7BContactDetailId%7D", row.ContactDetailId).replace("%7BContactDetailId%7D", row.ContactDetailId);
+                        return el;
+                    }
+                }
+            }).on("loaded.rs.jquery.bootgrid", function () {
+                $(this).find('[data-toggle="tooltip"]').tooltip();
 
-        $(this).find("a.delete-reservation-button").on("click", function (e) {
-            if (confirm("Do you want to delete the Reservation Contact?")) {
-                return true;
-            }
+                $(this).find("a.delete-reservation-button").on("click", function (e) {
+                    if (confirm("Do you want to delete the Reservation Contact?")) {
+                        return true;
+                    }
 
-            e.preventDefault();
+                    e.preventDefault();
 
-            return false;
-        });
-    });
+                    return false;
+                });
+            });
         </text>
     }
+
+    $('#btnSave').click(function(e) {
+        e.preventDefault();
+
+        var formData = new FormData();
+        formData.append("ContactName", $('#ContactName').val());
+        formData.append("ContactAddress", CKEDITOR.instances['ContactAddress'].getData());
+        formData.append("ContactTitle", CKEDITOR.instances['ContactTitle'].getData());
+
+        $.ajax({
+            type: "POST",
+            url: '/Admin/ContactUs',
+            data: formData,
+            dataType: 'json',
+            traditional: true,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.result === "success") {
+                    window.location.reload();
+                } else {
+                    DisplayErrors(response.Errors);
+                }
+            },
+            error: function (error) {
+                alert(error);
+            }
+        });
+    });
 
     @if (Model.ContactEmails.Count > 0)
     {
@@ -219,5 +310,13 @@ else
         });
     });
         </text>
+    }
+
+    function DisplayErrors(errors) {
+        for (var i = 0; i < errors.length; i++) {
+            $('#div' + errors[i].Key + '').show();
+            $('#lbl' + errors[i].Key + '')
+                .html(errors[i].Value[0]).appendTo($("input#" + errors[i].Key).parent());
+        }
     }
 </script>

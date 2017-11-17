@@ -12,96 +12,108 @@
                 {
                     <text>
                         Experience Gallery - @Model.LocationName
-                        <a href="@Url.Action("AddGallery", "Admin", new{id = Model.LocationId})" class="btn btn-primary pull-right">
-                            <span class="glyphicon glyphicon-plus"></span>
-                            Add Gallery
-                        </a>
                     </text>
                 }
                 else
                 {
                     <text>
                         Experience Gallery
-                        <a href="@Url.Action("AddGallery", "Admin")" class="btn btn-primary pull-right">
-                            <span class="glyphicon glyphicon-plus"></span>
-                            Add Gallery
-                        </a>
                     </text>
                 }
 
-                
+
             </h1>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button id="batchDelete" class="btn btn-primary pull-right" style="margin-left: 5px;"><span class="glyphicon glyphicon-trash"></span> Batch Delete</button>
+                @if (Model.LocationId != 0)
+                {
+                    <a href="@Url.Action("AddGallery", "Admin", new{id = Model.LocationId})" class="btn btn-primary pull-right">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Add Gallery
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("AddGallery", "Admin")" class="btn btn-primary pull-right">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Add Gallery
+                    </a>
+                }
+
+            </div>
         </div>
         <div class="table-responsive">
             <table id="GalleryTable" class="table table-bordered table-hover table-striped">
                 <thead>
-                <tr>
-                    @if (Model.LocationId != 0 && Model.LocationName != "")
-                    {
-                        <th data-column-id="LocationDetailId" data-identifier="true" data-visible="false">Id</th>
-                        <th data-column-id="ContentType">Content Type</th>
-                        <th data-column-id="LocationContent" data-formatter="ViewImage">Content</th>
-                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
-                    }
-                    else
-                    {
-                        <th data-column-id="LocationDetailId" data-identifier="true" data-visible="false">Id</th>
-                        <th data-column-id="ContentType">Content Type</th>
-                        <th data-column-id="LocationName">LocationName</th>
-                        <th data-column-id="LocationContent" data-formatter="ViewImage">Content</th>
-                        <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
-                    }
-                </tr>
+                    <tr>
+                        @if (Model.LocationId != 0 && Model.LocationName != "")
+                        {
+                            <th data-column-id="LocationDetailId" data-identifier="true" data-visible="false">Id</th>
+                            <th data-column-id="ContentType">Content Type</th>
+                            <th data-column-id="LocationContent" data-formatter="ViewImage">Content</th>
+                            <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                        }
+                        else
+                        {
+                            <th data-column-id="LocationDetailId" data-identifier="true" data-visible="false">Id</th>
+                            <th data-column-id="ContentType">Content Type</th>
+                            <th data-column-id="LocationName">LocationName</th>
+                            <th data-column-id="LocationContent" data-formatter="ViewImage">Content</th>
+                            <th data-column-id="ActionColumnBar" data-formatter="ActionColumnBar">Actions</th>
+                        }
+                    </tr>
                 </thead>
                 <tbody>
-                @if (Model != null && Model.Galleries.Count > 0)
-                {
-                    if (Model.LocationId != 0 && Model.LocationName != "")
+                    @if (Model != null && Model.Galleries.Count > 0)
                     {
-                        foreach (var item in Model.Galleries)
+                        if (Model.LocationId != 0 && Model.LocationName != "")
                         {
-                            <tr>
-                                <td>@item.LocationDetailId</td>
-                                <td>@item.ContentType</td>
-                                @if (item.ContentType == "Image")
-                                {
-                                    <td>@item.LocationContent</td>
-                                }
-                                else
-                                {
-                                    <td>@item.LocationContent</td>
-                                }
-                            </tr>
+                            foreach (var item in Model.Galleries)
+                            {
+                                <tr>
+                                    <td>@item.LocationDetailId</td>
+                                    <td>@item.ContentType</td>
+                                    @if (item.ContentType == "Image")
+                                    {
+                                        <td>@item.LocationContent</td>
+                                    }
+                                    else
+                                    {
+                                        <td><a href="@item.LocationContent" target="_blank">@item.LocationContent</a></td>
+                                    }
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in Model.Galleries)
+                            {
+                                <tr>
+                                    <td>@item.LocationDetailId</td>
+                                    <td>@item.ContentType</td>
+                                    <td>@item.LocationName</td>
+                                    @if (item.ContentType == "Image")
+                                    {
+                                        <td>@item.LocationContent</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.LocationContent</td>
+                                    }
+                                </tr>
+                            }
                         }
                     }
                     else
                     {
-                        foreach (var item in Model.Galleries)
-                        {
-                            <tr>
-                                <td>@item.LocationDetailId</td>
-                                <td>@item.ContentType</td>
-                                <td>@item.LocationName</td>
-                                @if (item.ContentType == "Image")
-                                {
-                                    <td>@item.LocationContent</td>
-                                }
-                                else
-                                {
-                                    <td>@item.LocationContent</td>
-                                }
-                            </tr>
-                        }
+                        <tr>
+                            <td colspan="4">
+                                No Content yet.
+                            </td>
+                        </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="4">
-                            No Content yet.
-                        </td>
-                    </tr>
-                }
                 </tbody>
             </table>
         </div>
@@ -114,39 +126,70 @@
 </div>
 
 <script>
+
+    $('#batchDelete').click(function (e) {
+        var row = $('#GalleryTable').bootgrid("getSelectedRows");
+        if (row.length === 0) {
+            alert("Please select gallery to delete.");
+            return false;
+        } else {
+            if (confirm("Are you want to delete the gallery?")) {
+                $.ajax({
+                    type: "GET",
+                    data: { id: row },
+                    dataType: 'json',
+                    traditional: true,
+                    url: '/Admin/BatchDeleteGallery',
+                    success: function (response) {
+                        if (response.result === "success") {
+                            window.location.reload();
+                        } else {
+                            swal(response.message, "", "error");
+                        }
+                    },
+                    error: function (error) {
+                        alert(error.message);
+                    }
+                });
+            }
+        }
+    });
+
     @if (Model.Galleries.Count > 0)
     {
         <text>
     $("#GalleryTable").bootgrid({
-                ajax: false,
-                caseSensitive: false,
-                formatters: {
-                    "ActionColumnBar": function (column, row) {
-                        var el = $("div.action-column-bar").html();
-                        el = el.replace("%7BLocationDetailId%7D", row.LocationDetailId).replace("%7BLocationDetailId%7D", row.LocationDetailId).replace("%7BLocationId%7D", @Model.LocationId);
-                        return el;
-                    },
-                    "ViewImage": function(column, row) {
-                        if (row.ContentType === "Image") {
-                            return('<img style="width:200px; height:100px;" src="' + row.LocationContent + '" />');
-                        } else {
-                            return row.LocationContent;
-                        }
-                    }
+        ajax: false,
+        caseSensitive: false,
+        selection: true,
+        multiSelect: true,
+        formatters: {
+            "ActionColumnBar": function (column, row) {
+                var el = $("div.action-column-bar").html();
+                el = el.replace("%7BLocationDetailId%7D", row.LocationDetailId).replace("%7BLocationDetailId%7D", row.LocationDetailId).replace("%7BLocationId%7D", @Model.LocationId);
+                return el;
+            },
+            "ViewImage": function(column, row) {
+                if (row.ContentType === "Image") {
+                    return('<img style="width:200px; height:100px;" src="' + row.LocationContent + '" />');
+                } else {
+                    return ('<a href="' + row.LocationContent + '" target="_blank">' + row.LocationContent +'</a>');
                 }
-            }).on("loaded.rs.jquery.bootgrid", function () {
-                $(this).find('[data-toggle="tooltip"]').tooltip();
+            }
+        }
+    }).on("loaded.rs.jquery.bootgrid", function () {
+        $(this).find('[data-toggle="tooltip"]').tooltip();
 
-                $(this).find("a.delete-gallery-button").on("click", function (e) {
-                    if (confirm("Do you want to delete the gallery?")) {
-                        return true;
-                    }
+        $(this).find("a.delete-gallery-button").on("click", function (e) {
+            if (confirm("Do you want to delete the gallery?")) {
+                return true;
+            }
 
-                    e.preventDefault();
+            e.preventDefault();
 
-                    return false;
-                });
-            });
+            return false;
+        });
+    });
         </text>
     }
 </script>
